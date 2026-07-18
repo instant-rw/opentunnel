@@ -23,13 +23,43 @@ func newDashboardHandler(assets fs.FS) http.Handler {
 		w.Header().Set("Referrer-Policy", "no-referrer")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "DENY")
-		if r.URL.Path == "/" || strings.HasSuffix(r.URL.Path, ".html") {
+		path := r.URL.Path
+		if path == "/" || strings.HasSuffix(path, ".html") || !looksLikeStaticAsset(path) {
 			w.Header().Set("Cache-Control", "no-cache")
 		} else {
 			w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 		}
+		if shouldServeDashboardIndex(root, path) {
+			r = r.Clone(r.Context())
+			r.URL.Path = "/"
+		}
 		files.ServeHTTP(w, r)
 	})
+}
+
+func looksLikeStaticAsset(path string) bool {
+	base := path
+	if index := strings.LastIndex(path, "/"); index >= 0 {
+		base = path[index+1:]
+	}
+	return strings.Contains(base, ".")
+}
+
+func shouldServeDashboardIndex(root fs.FS, path string) bool {
+	if path == "/" || looksLikeStaticAsset(path) {
+		return false
+	}
+	cleaned := strings.Trim(path, "/")
+	if cleaned == "" {
+		return false
+	}
+	if _, err := fs.Stat(root, cleaned); err == nil {
+		return false
+	}
+	if _, err := fs.Stat(root, cleaned+"/index.html"); err == nil {
+		return false
+	}
+	return true
 }
 
 func (s *Server) health(w http.ResponseWriter, _ *http.Request) {

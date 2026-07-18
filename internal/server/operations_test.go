@@ -61,3 +61,20 @@ func TestDashboardAssetsAreServedWithSecurityHeaders(t *testing.T) {
 		t.Fatal("dashboard response omitted clickjacking protection")
 	}
 }
+
+func TestDashboardServesDeviceApprovalPath(t *testing.T) {
+	t.Parallel()
+	handler := New(Config{BaseURL: "https://opts.ink", PublicHost: "opts.ink"}, &fakeStore{})
+	request := httptest.NewRequest(http.MethodGet, "/device?user_code=B182-3514", nil)
+	request.Host = "opts.ink"
+	response := httptest.NewRecorder()
+
+	handler.ServeHTTP(response, request)
+
+	if response.Code != http.StatusOK {
+		t.Fatalf("got status %d body %q", response.Code, response.Body.String())
+	}
+	if !strings.Contains(response.Body.String(), "<title>OpenTunnel</title>") {
+		t.Fatalf("device path did not serve dashboard: %q", response.Body.String())
+	}
+}

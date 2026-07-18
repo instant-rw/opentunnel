@@ -20,6 +20,13 @@ Use the newest device URL and code; codes expire after ten minutes. Ensure the
 browser and CLI target the same control-plane origin and that cookies are allowed.
 System clocks must be reasonably synchronized.
 
+## `/device` returns plain `404 page not found`
+
+That response is the Go file server, not the dashboard. Redeploy an image built
+from the root `Dockerfile` so `/device` falls back to the embedded Next export.
+Apex `opts.ink` serves the control plane; only `*.opts.ink` tunnel hosts should
+return `503 Tunnel Offline` when disconnected.
+
 ## Tunnel repeatedly reconnects
 
 Check proxies for WebSocket idle timeouts, compare heartbeat and grace settings,

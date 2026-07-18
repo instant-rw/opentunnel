@@ -2,6 +2,6 @@
 
 import { AppShell } from "@/components/app-shell";
 
-export default function HomePage() {
+export default function DeviceApprovalPage() {
   return <AppShell />;
 }

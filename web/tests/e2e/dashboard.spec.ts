@@ -26,7 +26,7 @@ test("shows device approval context", async ({ page }) => {
     route.fulfill({ status: 401, body: "{}" }),
   );
 
-  await page.goto("/?user_code=ABCD-EFGH");
-  await expect(page.getByText(/approve cli access/i)).toBeVisible();
+  await page.goto("/device/?user_code=ABCD-EFGH");
+  await expect(page.getByText(/approve cli sign-in/i)).toBeVisible();
   await expect(page.getByText("ABCD-EFGH")).toBeVisible();
 });
