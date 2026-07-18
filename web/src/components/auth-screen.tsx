@@ -11,8 +11,10 @@ import {
 } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
-import { Button, Card, Input } from "@/components/ui";
+import { DeviceApproved } from "@/components/device-approved";
+import { Button, Input } from "@/components/ui";
 import { api, ApiError, type User } from "@/lib/api";
+import { clearUserCodeFromUrl } from "@/lib/device-auth";
 
 type AuthMode = "login" | "register";
 
@@ -48,6 +50,7 @@ export function AuthScreen({
       const user = await api.me();
       if (userCode) {
         await api.approveDevice(userCode);
+        clearUserCodeFromUrl();
         setApprovedUser(user);
       } else {
         onAuthenticated(user);
@@ -65,25 +68,7 @@ export function AuthScreen({
 
   if (approvedUser) {
     return (
-      <main className="auth-shell">
-        <Card className="approval-success">
-          <span className="success-orb">
-            <Check size={28} />
-          </span>
-          <p className="eyebrow">Device approved</p>
-          <h1>You’re all set</h1>
-          <p>
-            Return to your terminal. OpenTunnel will finish signing in
-            automatically.
-          </p>
-          <Button
-            onClick={() => onAuthenticated(approvedUser)}
-            variant="secondary"
-          >
-            Open dashboard
-          </Button>
-        </Card>
-      </main>
+      <DeviceApproved onContinue={() => onAuthenticated(approvedUser)} />
     );
   }
 

@@ -131,25 +131,26 @@ func (a *App) login(ctx context.Context, client *control.Client) (string, error)
 	if err != nil {
 		return "", err
 	}
-	fmt.Fprintf(a.Out, "Your code is: %s\nApprove this device at:\n%s\n", authorization.UserCode, authorization.VerificationUriComplete)
+	fmt.Fprintf(a.Out, "Your code is: %s\nApprove this device at:\n%s\nWaiting for approval…\n", authorization.UserCode, authorization.VerificationUriComplete)
 	if err := a.OpenBrowser(authorization.VerificationUriComplete); err != nil {
 		fmt.Fprintf(a.ErrOut, "Could not open a browser: %v\n", err)
 	}
 
 	interval := control.PollInterval(authorization)
-	deadline := time.NewTimer(time.Duration(authorization.ExpiresIn) * time.Second)
-	defer deadline.Stop()
-	ticker := time.NewTicker(interval)
-	defer ticker.Stop()
+	deadline := time.Now().Add(time.Duration(authorization.ExpiresIn) * time.Second)
+	timer := time.NewTimer(0)
+	defer timer.Stop()
 	for {
 		select {
 		case <-ctx.Done():
 			return "", ctx.Err()
-		case <-deadline.C:
-			return "", errors.New("device authorization expired; run `opentunnel login` again")
-		case <-ticker.C:
+		case <-timer.C:
+			if time.Now().After(deadline) {
+				return "", errors.New("device authorization expired; run `opentunnel login` again")
+			}
 			token, err := client.ExchangeDeviceCode(ctx, authorization.DeviceCode)
 			if errors.Is(err, control.ErrAuthorizationPending) {
+				timer.Reset(interval)
 				continue
 			}
 			if err != nil {

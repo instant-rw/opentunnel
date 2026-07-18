@@ -349,17 +349,20 @@ func (s *Store) ExchangeDeviceCode(
 	if time.Now().After(expiresAt) {
 		return "", ErrExpired
 	}
-	now := time.Now()
-	if lastPolledAt != nil && now.Before(lastPolledAt.Add(time.Duration(interval)*time.Second)) {
-		if _, err := tx.Exec(ctx, "UPDATE device_authorizations SET interval_seconds = interval_seconds + 5 WHERE id = $1", id); err != nil {
-			return "", err
+	switch status {
+	case "pending":
+		// Rate limiting applies only while pending. Approved exchanges must not be
+		// delayed — a slow_down death spiral previously blocked token issuance.
+		now := time.Now()
+		if lastPolledAt != nil && now.Before(lastPolledAt.Add(time.Duration(interval)*time.Second)) {
+			if _, err := tx.Exec(ctx, "UPDATE device_authorizations SET interval_seconds = interval_seconds + 5 WHERE id = $1", id); err != nil {
+				return "", err
+			}
+			if err := tx.Commit(ctx); err != nil {
+				return "", err
+			}
+			return "", ErrSlowDown
 		}
-		if err := tx.Commit(ctx); err != nil {
-			return "", err
-		}
-		return "", ErrSlowDown
-	}
-	if status == "pending" {
 		if _, err := tx.Exec(ctx, "UPDATE device_authorizations SET last_polled_at = now() WHERE id = $1", id); err != nil {
 			return "", err
 		}
@@ -367,27 +370,27 @@ func (s *Store) ExchangeDeviceCode(
 			return "", err
 		}
 		return "", ErrPending
-	}
-	if status != "approved" {
+	case "approved":
+		tokenID := uuid.New()
+		if _, err := tx.Exec(ctx, `
+			INSERT INTO cli_tokens(id, user_id, token_hash) VALUES ($1, $2, $3)`,
+			tokenID, *userID, tokenHash,
+		); err != nil {
+			return "", translate(err)
+		}
+		if _, err := tx.Exec(ctx, `
+			UPDATE device_authorizations SET status = 'consumed', consumed_at = now() WHERE id = $1`,
+			id,
+		); err != nil {
+			return "", err
+		}
+		if err := tx.Commit(ctx); err != nil {
+			return "", err
+		}
+		return tokenID.String(), nil
+	default:
 		return "", ErrNotFound
 	}
-	tokenID := uuid.New()
-	if _, err := tx.Exec(ctx, `
-		INSERT INTO cli_tokens(id, user_id, token_hash) VALUES ($1, $2, $3)`,
-		tokenID, *userID, tokenHash,
-	); err != nil {
-		return "", translate(err)
-	}
-	if _, err := tx.Exec(ctx, `
-		UPDATE device_authorizations SET status = 'consumed', consumed_at = now() WHERE id = $1`,
-		id,
-	); err != nil {
-		return "", err
-	}
-	if err := tx.Commit(ctx); err != nil {
-		return "", err
-	}
-	return tokenID.String(), nil
 }
 
 func (s *Store) ListTokens(ctx context.Context, userID uuid.UUID) ([]Token, error) {
