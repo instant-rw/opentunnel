@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-REPOSITORY="${OPENTUNNEL_REPOSITORY:-opentunnel/opentunnel}"
+REPOSITORY="${OPENTUNNEL_REPOSITORY:-instant-rw/opentunnel}"
 INSTALL_DIR="${OPENTUNNEL_INSTALL_DIR:-/usr/local/bin}"
 VERSION="${OPENTUNNEL_VERSION:-latest}"
 
