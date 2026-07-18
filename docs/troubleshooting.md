@@ -40,6 +40,12 @@ fallback asset unless `internal/webassets/out` was populated before compilation.
 Purge Cloudflare cache for HTML, but keep fingerprinted `_next/static` assets
 cacheable. API and tunnel paths must never be cached.
 
+## Dashboard HTML loads but `/_next/static/*` returns 404
+
+Go’s default `//go:embed` skips paths that begin with `_`, including Next.js
+`_next/`. The server must embed with `//go:embed all:out`. Rebuild and redeploy
+the Docker image after that fix; then hard-refresh or purge Cloudflare HTML.
+
 ## Installer checksum or PATH failures
 
 Installers require a published `v*` GitHub release and `checksums.txt`. Set

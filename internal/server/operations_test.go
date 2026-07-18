@@ -78,3 +78,23 @@ func TestDashboardServesDeviceApprovalPath(t *testing.T) {
 		t.Fatalf("device path did not serve dashboard: %q", response.Body.String())
 	}
 }
+
+func TestDashboardServesUnderscorePrefixedNextAssets(t *testing.T) {
+	t.Parallel()
+	handler := New(Config{}, &fakeStore{})
+	request := httptest.NewRequest(http.MethodGet, "/_next/static/chunks/embed-probe.js", nil)
+	response := httptest.NewRecorder()
+
+	handler.ServeHTTP(response, request)
+
+	if response.Code != http.StatusOK {
+		t.Fatalf("got status %d body %q", response.Code, response.Body.String())
+	}
+	contentType := response.Header().Get("Content-Type")
+	if !strings.Contains(contentType, "javascript") && !strings.Contains(contentType, "ecmascript") {
+		t.Fatalf("unexpected content type %q", contentType)
+	}
+	if !strings.Contains(response.Body.String(), "__OPENTUNNEL_EMBED_PROBE__") {
+		t.Fatalf("probe asset missing from embed: %q", response.Body.String())
+	}
+}

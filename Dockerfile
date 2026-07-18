@@ -18,6 +18,7 @@ COPY . .
 COPY --from=web /src/web/out /tmp/web-out
 RUN rm -rf internal/webassets/out && \
     cp -R /tmp/web-out internal/webassets/out && \
+    test -d internal/webassets/out/_next/static/chunks && \
     CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/opentunnel-server ./cmd/server
 
 FROM alpine:3.22
