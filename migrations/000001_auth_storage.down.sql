@@ -1,0 +1,11 @@
+DROP TABLE replay_attempts;
+DROP TYPE replay_status;
+DROP TABLE requests;
+DROP TABLE tunnel_sessions;
+DROP TABLE domains;
+DROP TABLE device_authorizations;
+DROP TYPE device_authorization_status;
+DROP TABLE cli_tokens;
+DROP TABLE web_sessions;
+DROP TABLE users;
+DROP TABLE schema_migrations;

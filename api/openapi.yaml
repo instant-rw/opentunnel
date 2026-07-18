@@ -1,0 +1,533 @@
+openapi: 3.0.3
+info:
+  title: OpenTunnel Control Plane API
+  version: 1.0.0
+  description: Control-plane contract shared by the server, CLI, and dashboard.
+servers:
+  - url: /api/v1
+security:
+  - cookieSession: []
+  - bearerToken: []
+paths:
+  /healthz:
+    get:
+      operationId: getHealth
+      security: []
+      responses:
+        "200":
+          description: Process is healthy.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+  /auth/register:
+    post:
+      operationId: register
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Account created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/login:
+    post:
+      operationId: login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "204":
+          description: Session established.
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/logout:
+    post:
+      operationId: logout
+      responses:
+        "204":
+          description: Session revoked.
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/me:
+    get:
+      operationId: getCurrentUser
+      responses:
+        "200":
+          description: Current user.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          $ref: "#/components/responses/Error"
+  /device/authorizations:
+    post:
+      operationId: createDeviceAuthorization
+      security: []
+      responses:
+        "201":
+          description: Device authorization created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceAuthorization"
+        default:
+          $ref: "#/components/responses/Error"
+  /device/authorizations/{userCode}/approve:
+    post:
+      operationId: approveDeviceAuthorization
+      parameters:
+        - $ref: "#/components/parameters/UserCode"
+      responses:
+        "204":
+          description: Device approved.
+        default:
+          $ref: "#/components/responses/Error"
+  /device/token:
+    post:
+      operationId: exchangeDeviceCode
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeviceTokenRequest"
+      responses:
+        "200":
+          description: CLI token issued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeviceToken"
+        "202":
+          description: Authorization remains pending.
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+        default:
+          $ref: "#/components/responses/Error"
+  /domains:
+    get:
+      operationId: listDomains
+      responses:
+        "200":
+          description: Owned domains.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Domain"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      operationId: createDomain
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDomainRequest"
+      responses:
+        "201":
+          description: Domain allocated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Domain"
+        default:
+          $ref: "#/components/responses/Error"
+  /domains/{domainId}:
+    get:
+      operationId: getDomain
+      parameters:
+        - $ref: "#/components/parameters/DomainId"
+      responses:
+        "200":
+          description: Domain details.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Domain"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      operationId: deleteDomain
+      parameters:
+        - $ref: "#/components/parameters/DomainId"
+      responses:
+        "204":
+          description: Domain released.
+        default:
+          $ref: "#/components/responses/Error"
+  /domains/{domainId}/requests:
+    get:
+      operationId: listRequests
+      parameters:
+        - $ref: "#/components/parameters/DomainId"
+        - name: cursor
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+      responses:
+        "200":
+          description: Captured requests.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RequestPage"
+        default:
+          $ref: "#/components/responses/Error"
+  /domains/{domainId}/events:
+    get:
+      operationId: streamDomainEvents
+      parameters:
+        - $ref: "#/components/parameters/DomainId"
+      responses:
+        "200":
+          description: Server-sent domain and request events.
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/{requestId}:
+    get:
+      operationId: getRequest
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+      responses:
+        "200":
+          description: Captured request details.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CapturedRequest"
+        default:
+          $ref: "#/components/responses/Error"
+  /requests/{requestId}/replays:
+    post:
+      operationId: replayRequest
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+      responses:
+        "202":
+          description: Replay queued on the active tunnel.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Replay"
+        default:
+          $ref: "#/components/responses/Error"
+  /tokens:
+    get:
+      operationId: listTokens
+      responses:
+        "200":
+          description: Revocable CLI tokens.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TokenSummary"
+        default:
+          $ref: "#/components/responses/Error"
+  /tokens/{tokenId}:
+    delete:
+      operationId: revokeToken
+      parameters:
+        - name: tokenId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "204":
+          description: Token revoked.
+        default:
+          $ref: "#/components/responses/Error"
+components:
+  securitySchemes:
+    cookieSession:
+      type: apiKey
+      in: cookie
+      name: opentunnel_session
+    bearerToken:
+      type: http
+      scheme: bearer
+  parameters:
+    UserCode:
+      name: userCode
+      in: path
+      required: true
+      schema:
+        type: string
+    DomainId:
+      name: domainId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    RequestId:
+      name: requestId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  responses:
+    Error:
+      description: Request failed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+  schemas:
+    Health:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+    Problem:
+      type: object
+      required: [type, title, status]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference
+        code:
+          type: string
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 12
+    LoginRequest:
+      $ref: "#/components/schemas/RegisterRequest"
+    User:
+      type: object
+      required: [id, email, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        createdAt:
+          type: string
+          format: date-time
+    DeviceAuthorization:
+      type: object
+      required:
+        [
+          deviceCode,
+          userCode,
+          verificationUri,
+          verificationUriComplete,
+          expiresIn,
+          interval,
+        ]
+      properties:
+        deviceCode:
+          type: string
+        userCode:
+          type: string
+        verificationUri:
+          type: string
+          format: uri
+        verificationUriComplete:
+          type: string
+          format: uri
+        expiresIn:
+          type: integer
+        interval:
+          type: integer
+    DeviceTokenRequest:
+      type: object
+      required: [deviceCode]
+      properties:
+        deviceCode:
+          type: string
+    DeviceToken:
+      type: object
+      required: [accessToken, tokenType]
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+          enum: [Bearer]
+    CreateDomainRequest:
+      type: object
+      required: [slug]
+      properties:
+        slug:
+          type: string
+          pattern: "^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$"
+    Domain:
+      type: object
+      required: [id, slug, hostname, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        slug:
+          type: string
+        hostname:
+          type: string
+        status:
+          type: string
+          enum: [offline, online]
+        createdAt:
+          type: string
+          format: date-time
+    Header:
+      type: object
+      required: [name, values]
+      properties:
+        name:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+    BodyCapture:
+      type: object
+      required: [base64, size, truncated]
+      properties:
+        base64:
+          type: string
+          format: byte
+        size:
+          type: integer
+          format: int64
+        truncated:
+          type: boolean
+    CapturedResponse:
+      type: object
+      required: [status, headers, durationMs]
+      properties:
+        status:
+          type: integer
+        headers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Header"
+        body:
+          $ref: "#/components/schemas/BodyCapture"
+        durationMs:
+          type: integer
+          format: int64
+    CapturedRequest:
+      type: object
+      required: [id, domainId, method, path, query, headers, receivedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        domainId:
+          type: string
+          format: uuid
+        method:
+          type: string
+        path:
+          type: string
+        query:
+          type: string
+        headers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Header"
+        body:
+          $ref: "#/components/schemas/BodyCapture"
+        response:
+          $ref: "#/components/schemas/CapturedResponse"
+        receivedAt:
+          type: string
+          format: date-time
+    RequestPage:
+      type: object
+      required: [items]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CapturedRequest"
+        nextCursor:
+          type: string
+    Replay:
+      type: object
+      required: [id, requestId, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        requestId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [queued, running, succeeded, failed]
+        createdAt:
+          type: string
+          format: date-time
+    TokenSummary:
+      type: object
+      required: [id, name, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        lastUsedAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time

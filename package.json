@@ -1,0 +1,25 @@
+{
+  "name": "opentunnel",
+  "private": true,
+  "workspaces": [
+    "web"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace web",
+    "check": "npm run typecheck --workspace web",
+    "format:check": "prettier --check .",
+    "generate": "npm run generate:api:ts && npm run generate:api:go && npm run generate:protocol",
+    "generate:api:go": "go generate ./internal/gen/api",
+    "generate:api:ts": "npm run generate:api --workspace web",
+    "generate:protocol": "buf generate",
+    "lint": "npm run lint --workspace web"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "^1.72.0",
+    "prettier": "^3.9.5"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "npm@11.17.0"
+}

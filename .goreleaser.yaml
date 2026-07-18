@@ -1,0 +1,43 @@
+version: 2
+
+project_name: opentunnel
+
+before:
+  hooks:
+    - go test ./cmd/opentunnel/... ./internal/cli/...
+
+builds:
+  - id: opentunnel
+    main: ./cmd/opentunnel
+    binary: opentunnel
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+archives:
+  - id: cli
+    ids:
+      - opentunnel
+    formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+changelog:
+  sort: asc

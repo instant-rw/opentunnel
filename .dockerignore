@@ -1,0 +1,9 @@
+.git
+.github
+.env
+bin
+coverage
+node_modules
+web/.next
+web/out
+*.tsbuildinfo

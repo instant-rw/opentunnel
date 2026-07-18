@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: opentunnel_test
+          POSTGRES_PASSWORD: opentunnel
+          POSTGRES_USER: opentunnel
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U opentunnel -d opentunnel_test"
+          --health-interval 2s
+          --health-timeout 3s
+          --health-retries 15
+    env:
+      OPENTUNNEL_TEST_DATABASE_URL: postgres://opentunnel:opentunnel@localhost:5432/opentunnel_test?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Verify generated contracts
+        run: npm run generate && git diff --exit-code
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run check
+      - run: npm run build
+      - run: go test -race ./...
+      - run: go build ./cmd/server ./cmd/opentunnel
+      - name: Check installer scripts
+        run: sh -n scripts/install.sh
+      - name: Run browser smoke tests
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e --workspace web
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose config --quiet
+      - run: docker build --check .
+      - run: docker build -t opentunnel:test .

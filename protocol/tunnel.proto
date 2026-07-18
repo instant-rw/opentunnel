@@ -1,0 +1,125 @@
+syntax = "proto3";
+
+package opentunnel.tunnel.v1;
+
+option go_package = "github.com/opentunnel/opentunnel/internal/gen/tunnel/v1;tunnelv1";
+
+// Envelope is the only frame payload sent over the authenticated WebSocket.
+// protocol_version must be 1 for this package.
+message Envelope {
+  uint32 protocol_version = 1;
+  uint64 sequence = 2;
+
+  oneof message {
+    ClientHello client_hello = 10;
+    ServerHello server_hello = 11;
+    RequestStart request_start = 12;
+    RequestBody request_body = 13;
+    RequestEnd request_end = 14;
+    ResponseStart response_start = 15;
+    ResponseBody response_body = 16;
+    ResponseEnd response_end = 17;
+    Cancel cancel = 18;
+    Ping ping = 19;
+    Pong pong = 20;
+    ProtocolError error = 21;
+    WindowUpdate window_update = 22;
+  }
+}
+
+message Header {
+  string name = 1;
+  repeated string values = 2;
+}
+
+message ClientHello {
+  string domain_id = 1;
+  string client_version = 2;
+}
+
+message ServerHello {
+  string session_id = 1;
+  uint32 heartbeat_interval_seconds = 2;
+  uint32 max_in_flight_requests = 3;
+  uint32 max_chunk_bytes = 4;
+}
+
+message RequestStart {
+  string request_id = 1;
+  string method = 2;
+  string path = 3;
+  string raw_query = 4;
+  repeated Header headers = 5;
+  int64 content_length = 6;
+  bool replay = 7;
+  int64 deadline_unix_milli = 8;
+}
+
+message RequestBody {
+  string request_id = 1;
+  bytes data = 2;
+}
+
+message RequestEnd {
+  string request_id = 1;
+}
+
+message ResponseStart {
+  string request_id = 1;
+  uint32 status_code = 2;
+  repeated Header headers = 3;
+}
+
+message ResponseBody {
+  string request_id = 1;
+  bytes data = 2;
+}
+
+message ResponseEnd {
+  string request_id = 1;
+}
+
+message Cancel {
+  string request_id = 1;
+  CancelReason reason = 2;
+  string detail = 3;
+}
+
+enum CancelReason {
+  CANCEL_REASON_UNSPECIFIED = 0;
+  CANCEL_REASON_CALLER_DISCONNECTED = 1;
+  CANCEL_REASON_DEADLINE_EXCEEDED = 2;
+  CANCEL_REASON_SERVER_SHUTDOWN = 3;
+  CANCEL_REASON_LOCAL_FAILURE = 4;
+}
+
+message Ping {
+  int64 sent_at_unix_milli = 1;
+}
+
+message Pong {
+  int64 sent_at_unix_milli = 1;
+}
+
+// WindowUpdate grants additional body bytes to the sender. A sender must not
+// exceed the per-request credit granted by the peer.
+message WindowUpdate {
+  string request_id = 1;
+  uint64 credit_bytes = 2;
+}
+
+message ProtocolError {
+  ProtocolErrorCode code = 1;
+  string request_id = 2;
+  string detail = 3;
+  bool fatal = 4;
+}
+
+enum ProtocolErrorCode {
+  PROTOCOL_ERROR_CODE_UNSPECIFIED = 0;
+  PROTOCOL_ERROR_CODE_UNSUPPORTED_VERSION = 1;
+  PROTOCOL_ERROR_CODE_INVALID_MESSAGE = 2;
+  PROTOCOL_ERROR_CODE_FLOW_CONTROL = 3;
+  PROTOCOL_ERROR_CODE_DUPLICATE_SESSION = 4;
+  PROTOCOL_ERROR_CODE_INTERNAL = 5;
+}
