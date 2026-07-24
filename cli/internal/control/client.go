@@ -12,7 +12,7 @@ import (
 	"github.com/opentunnel/opentunnel/shared/gen/api"
 )
 
-const DefaultAPIURL = "https://opts.ink/api/v1"
+const DefaultAPIURL = "https://api.opts.ink/api/v1"
 
 var ErrAuthorizationPending = errors.New("device authorization pending")
 

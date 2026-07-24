@@ -156,7 +156,7 @@ func (a *App) printUpdateHint(ctx context.Context) {
 	if latest.LessOrEqual(a.Version) {
 		return
 	}
-	fmt.Fprintf(a.ErrOut, "Update available: %s → %s (run `opentunnel update`)\n", a.Version, latest.Version())
+	fmt.Fprintf(a.ErrOut, "Update available: %s → %s (run `opentunnel update`)\n", a.Version, latest.VersionString())
 }
 
 func (a *App) login(ctx context.Context, client *control.Client) (string, error) {

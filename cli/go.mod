@@ -3,6 +3,7 @@ module github.com/opentunnel/opentunnel/cli
 go 1.25.0
 
 require (
+	github.com/Masterminds/semver/v3 v3.5.0
 	github.com/creativeprojects/go-selfupdate v1.4.0
 	github.com/google/uuid v1.6.0
 	github.com/oapi-codegen/runtime v1.6.0
@@ -12,7 +13,6 @@ require (
 require (
 	code.gitea.io/sdk/gitea v0.23.2 // indirect
 	github.com/42wim/httpsig v1.2.4 // indirect
-	github.com/Masterminds/semver/v3 v3.5.0 // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
 	github.com/davidmz/go-pageant v1.0.2 // indirect
 	github.com/go-chi/chi/v5 v5.3.1 // indirect

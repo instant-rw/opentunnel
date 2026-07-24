@@ -74,14 +74,14 @@ function LandingPage() {
           <div className="animate-in fade-in slide-in-from-bottom-4 w-full max-w-md delay-150 duration-700">
             <pre className="overflow-hidden border border-foreground/10 bg-[oklch(0.22_0.03_240)] p-5 font-mono text-[13px] leading-relaxed text-white/90 shadow-[0_24px_80px_-32px_oklch(0.3_0.05_240)]">
               <code>
-                <span className="text-white/45">$</span> opentunnel connect
+                <span className="text-white/45">$</span> opentunnel login
                 {"\n"}
-                <span className="text-emerald-300/90">✓</span> online{"  "}
-                <span className="text-sky-200/90">demo.opts.ink</span>
+                <span className="text-white/45">$</span> opentunnel domains create my-app
                 {"\n"}
-                <span className="text-white/45">→</span> localhost:3000
+                <span className="text-white/45">$</span> opentunnel up --domain my-app 3000
               </code>
             </pre>
+       
           </div>
         </section>
       </div>

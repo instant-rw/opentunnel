@@ -24,6 +24,16 @@ opentunnel up --domain my-app 3000
 `opentunnel up` without arguments. `OPENTUNNEL_API_URL` or the global
 `--api-url` option selects a non-production control plane.
 
+Update an installed release binary:
+
+```sh
+opentunnel update
+```
+
+`opentunnel update` downloads the matching GitHub release archive, verifies
+`checksums.txt`, and replaces the running binary. Override the repository with
+`OPENTUNNEL_REPOSITORY` (default `instant-rw/opentunnel`).
+
 ## Server integration
 
 The CLI connects to the server's authenticated binary WebSocket at:
