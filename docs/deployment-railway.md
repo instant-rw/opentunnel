@@ -17,8 +17,10 @@
    - `OPENTUNNEL_SECURE_COOKIES=true`
 
 4. Deploy the **frontend** as a second service. Set config-as-code to
-   `frontend/railway.json`. Set build-time `VITE_API_URL=https://opts.ink/api/v1`
-   (see `frontend/.env.production.example`). Attach the dashboard hostname
+   `frontend/railway.json` (repo root as the working directory so
+   `frontend/Dockerfile` can copy from `frontend/`). Set build-time
+   `VITE_API_URL=https://opts.ink/api/v1` (see
+   `frontend/.env.production.example`). Attach the dashboard hostname
    (e.g. `app.opts.ink`).
 5. Generate a Railway domain for the API first and verify `/healthz` and
    `/readyz`. Migrations run at API startup, so deploy only one migration-capable
