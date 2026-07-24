@@ -6,6 +6,7 @@ import {
   TerminalWindowIcon,
 } from "@phosphor-icons/react"
 
+import { Logo } from "@/components/logo"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -55,13 +56,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              size="lg"
-              render={<Link to="/dashboard" />}
-            >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <BroadcastIcon className="size-4" />
-              </div>
+            <SidebarMenuButton size="lg" render={<Link to="/dashboard" />}>
+              <Logo className="size-8 shrink-0" />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">OpenTunnel</span>
                 <span className="truncate text-xs">Workspace</span>

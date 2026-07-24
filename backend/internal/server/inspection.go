@@ -135,6 +135,9 @@ func (s *Server) ListRequests(
 	if params.Path != nil {
 		filter.Path = strings.TrimSpace(*params.Path)
 	}
+	if params.PathMode != nil && *params.PathMode == api.Exclude {
+		filter.PathExclude = true
+	}
 	if params.StatusMin != nil {
 		filter.StatusMin = params.StatusMin
 	}

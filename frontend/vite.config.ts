@@ -20,11 +20,22 @@ const config = defineConfig({
           outputPath: "/_shell.html",
           crawlLinks: false,
           retryCount: 0,
-          
         },
       },
       // Explicit concurrency avoids hang when os.cpus() is empty (some CI/sandboxes).
-      prerender: { concurrency: 1 },
+      // Prerender the landing page so crawlers get real HTML + meta tags.
+      prerender: {
+        concurrency: 1,
+        enabled: true,
+        crawlLinks: false,
+        autoStaticPathsDiscovery: false,
+      },
+      pages: [
+        {
+          path: "/",
+          prerender: { enabled: true, outputPath: "/index.html" },
+        },
+      ],
     }),
     viteReact(),
   ],

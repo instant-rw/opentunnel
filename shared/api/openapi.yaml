@@ -202,6 +202,13 @@ paths:
           description: Case-insensitive substring match against the request path.
           schema:
             type: string
+        - name: pathMode
+          in: query
+          description: Whether path matches are included or excluded.
+          schema:
+            type: string
+            enum: [include, exclude]
+            default: include
         - name: statusMin
           in: query
           description: Inclusive minimum response status code.

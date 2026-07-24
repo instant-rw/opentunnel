@@ -1,12 +1,8 @@
-import { BroadcastIcon } from "@phosphor-icons/react"
-import {
-  createFileRoute,
-  redirect,
-  useNavigate,
-} from "@tanstack/react-router"
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
 
 import { DeviceApproved } from "@/components/device-approved"
+import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,6 +15,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { api, ApiError } from "@/lib/api"
 import { clearUserCodeFromUrl } from "@/lib/device-auth"
+import { seoHead } from "@/lib/seo"
 
 type DeviceSearch = {
   user_code?: string
@@ -35,6 +32,13 @@ export const Route = createFileRoute("/device")({
     user_code:
       typeof search.user_code === "string" ? search.user_code : undefined,
   }),
+  head: () =>
+    seoHead({
+      title: "Authorize device",
+      description: "Approve an OpenTunnel CLI device for your workspace.",
+      path: "/device",
+      noIndex: true,
+    }),
   beforeLoad: async ({ search }) => {
     if (!search.user_code) {
       throw redirect({ to: "/dashboard" })
@@ -86,10 +90,8 @@ function DevicePage() {
 
   if (state.status === "loading" || state.status === "approving") {
     return (
-      <main className="flex min-h-svh flex-col items-center justify-center gap-3 bg-[radial-gradient(circle_at_top,_oklch(0.97_0.02_250),_oklch(0.94_0.01_220))] p-6">
-        <span className="flex size-10 items-center justify-center bg-foreground text-background">
-          <BroadcastIcon className="size-5" />
-        </span>
+      <main className="flex min-h-svh flex-col items-center justify-center gap-3 bg-background p-6">
+        <Logo className="size-10" />
         <strong>OpenTunnel</strong>
         <Spinner className="size-5" />
         <p className="text-xs tracking-wide text-muted-foreground uppercase">
@@ -101,14 +103,12 @@ function DevicePage() {
 
   if (state.status === "approved") {
     return (
-      <DeviceApproved
-        onContinue={() => void navigate({ to: "/dashboard" })}
-      />
+      <DeviceApproved onContinue={() => void navigate({ to: "/dashboard" })} />
     )
   }
 
   return (
-    <main className="flex min-h-svh items-center justify-center bg-[radial-gradient(circle_at_top,_oklch(0.97_0.02_250),_oklch(0.94_0.01_220))] p-6">
+    <main className="flex min-h-svh items-center justify-center bg-background p-6">
       <Card className="w-full max-w-md text-center">
         <CardHeader>
           <p className="text-xs tracking-wide text-muted-foreground uppercase">

@@ -113,8 +113,11 @@ func (f *inspectionFakeStore) ListCapturedRequests(
 		if filter.Method != "" && !strings.EqualFold(request.Method, filter.Method) {
 			continue
 		}
-		if filter.Path != "" && !strings.Contains(strings.ToLower(request.Path), strings.ToLower(filter.Path)) {
-			continue
+		if filter.Path != "" {
+			matches := strings.Contains(strings.ToLower(request.Path), strings.ToLower(filter.Path))
+			if filter.PathExclude == matches {
+				continue
+			}
 		}
 		if filter.StatusMin != nil && (request.ResponseStatus == nil || *request.ResponseStatus < *filter.StatusMin) {
 			continue
@@ -274,6 +277,22 @@ func TestListRequestsAppliesFilters(t *testing.T) {
 	}
 	if len(page.Items) != 1 || page.Items[0].Id != postReq {
 		t.Fatalf("items = %+v, want only POST /api/items", page.Items)
+	}
+
+	exclude := api.Exclude
+	excludeResponse := httptest.NewRecorder()
+	server.ListRequests(excludeResponse, request, store.domain.ID, api.ListRequestsParams{
+		Path: &path, PathMode: &exclude,
+	})
+	if excludeResponse.Code != http.StatusOK {
+		t.Fatalf("exclude status = %d, want %d", excludeResponse.Code, http.StatusOK)
+	}
+	var excludePage api.RequestPage
+	if err := json.NewDecoder(excludeResponse.Body).Decode(&excludePage); err != nil {
+		t.Fatalf("decode exclude page: %v", err)
+	}
+	if len(excludePage.Items) != 1 || excludePage.Items[0].Id != getReq {
+		t.Fatalf("exclude items = %+v, want only GET /health", excludePage.Items)
 	}
 }
 

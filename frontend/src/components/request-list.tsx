@@ -1,4 +1,9 @@
-import { ActivityIcon, MagnifyingGlassIcon } from "@phosphor-icons/react"
+import {
+  ActivityIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
+  MagnifyingGlassIcon,
+} from "@phosphor-icons/react"
 import { useEffect, useRef, useState } from "react"
 
 import { Badge } from "@/components/ui/badge"
@@ -27,10 +32,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   emptyFilters,
   filtersActive,
   type CapturedRequest,
+  type PathMode,
   type RequestFilters,
   type StatusClass,
 } from "@/lib/api"
@@ -63,28 +70,33 @@ const selectClassName = cn(
 export function RequestList({
   requests,
   loading,
-  loadingMore,
-  hasMore,
+  page,
+  hasPrevious,
+  hasNext,
   filters,
   selectedId,
   onSelect,
   onFiltersChange,
-  onLoadMore,
+  onPrevious,
+  onNext,
 }: {
   requests: CapturedRequest[]
   loading: boolean
-  loadingMore: boolean
-  hasMore: boolean
+  page: number
+  hasPrevious: boolean
+  hasNext: boolean
   filters: RequestFilters
   selectedId?: string
   onSelect: (request: CapturedRequest) => void
   onFiltersChange: (filters: RequestFilters) => void
-  onLoadMore: () => void
+  onPrevious: () => void
+  onNext: () => void
 }) {
   const [pathInput, setPathInput] = useState(filters.path)
   const filtersRef = useRef(filters)
   const onFiltersChangeRef = useRef(onFiltersChange)
   const active = filtersActive(filters)
+  const showPagination = hasPrevious || hasNext
 
   useEffect(() => {
     filtersRef.current = filters
@@ -159,14 +171,37 @@ export function RequestList({
               </option>
             ))}
           </select>
-          <div className="relative w-full min-w-0 flex-1 sm:max-w-xs">
-            <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              className="pl-7"
-              onChange={(event) => setPathInput(event.target.value)}
-              placeholder="Filter by path"
-              value={pathInput}
-            />
+          <div className="flex w-full min-w-0 flex-1 flex-col gap-2 sm:max-w-md sm:flex-row sm:items-center">
+            <ToggleGroup
+              aria-label="Path filter mode"
+              className="shrink-0"
+              onValueChange={(value) => {
+                const next = value[0] as PathMode | undefined
+                if (next === "include" || next === "exclude") {
+                  updateFilters({ pathMode: next })
+                }
+              }}
+              size="sm"
+              spacing={0}
+              value={[filters.pathMode]}
+              variant="outline"
+            >
+              <ToggleGroupItem value="include">Include</ToggleGroupItem>
+              <ToggleGroupItem value="exclude">Exclude</ToggleGroupItem>
+            </ToggleGroup>
+            <div className="relative min-w-0 flex-1">
+              <MagnifyingGlassIcon className="pointer-events-none absolute top-1/2 left-2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                className="pl-7"
+                onChange={(event) => setPathInput(event.target.value)}
+                placeholder={
+                  filters.pathMode === "exclude"
+                    ? "Exclude path…"
+                    : "Include path…"
+                }
+                value={pathInput}
+              />
+            </div>
           </div>
         </div>
       </CardHeader>
@@ -178,75 +213,61 @@ export function RequestList({
             <Skeleton className="h-10 w-full" />
           </div>
         ) : requests.length ? (
-          <>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Method</TableHead>
-                  <TableHead>Path</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Time</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {requests.map((request) => (
-                  <TableRow
-                    className={cn(
-                      "cursor-pointer",
-                      selectedId === request.id && "bg-muted/60"
-                    )}
-                    key={request.id}
-                    onClick={() => onSelect(request)}
-                  >
-                    <TableCell>
-                      <span
-                        className={cn(
-                          "px-1.5 py-0.5 font-mono text-[10px] font-semibold",
-                          methodTone(request.method)
-                        )}
-                      >
-                        {request.method}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-mono text-xs font-medium">
-                        {request.path}
-                      </div>
-                      {request.query ? (
-                        <div className="truncate text-[11px] text-muted-foreground">
-                          ?{request.query}
-                        </div>
-                      ) : null}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={statusVariant(request.response?.status)}>
-                        {request.response?.status ?? "Pending"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      {request.response?.durationMs ?? "—"} ms
-                    </TableCell>
-                    <TableCell>
-                      {formatRelativeTime(request.receivedAt)}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            {hasMore ? (
-              <div className="flex justify-center border-t px-4 py-3">
-                <Button
-                  disabled={loadingMore}
-                  onClick={onLoadMore}
-                  size="sm"
-                  variant="outline"
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Method</TableHead>
+                <TableHead>Path</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Duration</TableHead>
+                <TableHead>Time</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {requests.map((request) => (
+                <TableRow
+                  className={cn(
+                    "cursor-pointer",
+                    selectedId === request.id && "bg-muted/60"
+                  )}
+                  key={request.id}
+                  onClick={() => onSelect(request)}
                 >
-                  {loadingMore ? "Loading…" : "Load more"}
-                </Button>
-              </div>
-            ) : null}
-          </>
+                  <TableCell>
+                    <span
+                      className={cn(
+                        "px-1.5 py-0.5 font-mono text-[10px] font-semibold",
+                        methodTone(request.method)
+                      )}
+                    >
+                      {request.method}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-mono text-xs font-medium">
+                      {request.path}
+                    </div>
+                    {request.query ? (
+                      <div className="truncate text-[11px] text-muted-foreground">
+                        ?{request.query}
+                      </div>
+                    ) : null}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={statusVariant(request.response?.status)}>
+                      {request.response?.status ?? "Pending"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {request.response?.durationMs ?? "—"} ms
+                  </TableCell>
+                  <TableCell>
+                    {formatRelativeTime(request.receivedAt)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         ) : (
           <Empty className="border-0 py-10">
             <EmptyHeader>
@@ -264,6 +285,29 @@ export function RequestList({
             </EmptyHeader>
           </Empty>
         )}
+        {showPagination ? (
+          <div className="flex items-center justify-between gap-3 border-t px-4 py-3">
+            <Button
+              disabled={!hasPrevious || loading}
+              onClick={onPrevious}
+              size="sm"
+              variant="outline"
+            >
+              <CaretLeftIcon />
+              Back
+            </Button>
+            <span className="text-xs text-muted-foreground">Page {page}</span>
+            <Button
+              disabled={!hasNext || loading}
+              onClick={onNext}
+              size="sm"
+              variant="outline"
+            >
+              Next
+              <CaretRightIcon />
+            </Button>
+          </div>
+        ) : null}
       </CardContent>
     </Card>
   )

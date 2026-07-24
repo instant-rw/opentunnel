@@ -92,12 +92,13 @@ type CapturedRequest struct {
 
 // CapturedRequestFilter narrows list results. Empty Method/Path mean no filter.
 type CapturedRequestFilter struct {
-	Before    *time.Time
-	Method    string
-	Path      string
-	StatusMin *int
-	StatusMax *int
-	Limit     int
+	Before      *time.Time
+	Method      string
+	Path        string
+	PathExclude bool
+	StatusMin   *int
+	StatusMax   *int
+	Limit       int
 }
 
 type ReplayAttempt struct {
@@ -600,12 +601,20 @@ func (s *Store) ListCapturedRequests(
 		WHERE d.user_id = $1 AND d.id = $2
 			AND ($3::timestamptz IS NULL OR r.received_at < $3)
 			AND ($4 = '' OR upper(r.method) = upper($4))
-			AND ($5 = '' OR r.path ILIKE $5 ESCAPE '\')
-			AND ($6::int IS NULL OR r.response_status >= $6)
-			AND ($7::int IS NULL OR r.response_status <= $7)
-		ORDER BY r.received_at DESC, r.id DESC LIMIT $8`,
+			AND (
+				$5 = ''
+				OR (
+					CASE
+						WHEN $6 THEN r.path NOT ILIKE $5 ESCAPE '\'
+						ELSE r.path ILIKE $5 ESCAPE '\'
+					END
+				)
+			)
+			AND ($7::int IS NULL OR r.response_status >= $7)
+			AND ($8::int IS NULL OR r.response_status <= $8)
+		ORDER BY r.received_at DESC, r.id DESC LIMIT $9`,
 		userID, domainID, filter.Before, filter.Method, pathPattern,
-		filter.StatusMin, filter.StatusMax, filter.Limit,
+		filter.PathExclude, filter.StatusMin, filter.StatusMax, filter.Limit,
 	)
 	if err != nil {
 		return nil, err

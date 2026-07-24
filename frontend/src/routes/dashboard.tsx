@@ -8,6 +8,7 @@ import {
 import { AppSidebar } from "@/components/app-sidebar"
 import { NewDomainDialog } from "@/components/new-domain-dialog"
 import { RequestInspector } from "@/components/request-inspector"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -18,6 +19,7 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { api } from "@/lib/api"
 import { DashboardProvider, useDashboard } from "@/lib/dashboard-context"
+import { seoHead } from "@/lib/seo"
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: async () => {
@@ -28,6 +30,13 @@ export const Route = createFileRoute("/dashboard")({
       throw redirect({ to: "/login" })
     }
   },
+  head: () =>
+    seoHead({
+      title: "Dashboard",
+      description: "Manage your OpenTunnel workspace, tunnels, and access.",
+      path: "/dashboard",
+      noIndex: true,
+    }),
   component: DashboardLayout,
   pendingComponent: DashboardPending,
 })
@@ -82,13 +91,18 @@ function DashboardShell() {
               <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
               All systems operational
             </div>
+            <ThemeToggle />
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
           {error ? (
             <div className="flex items-center justify-between gap-3 border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm">
               <span>{error}</span>
-              <Button onClick={() => void loadDashboard()} size="sm" variant="secondary">
+              <Button
+                onClick={() => void loadDashboard()}
+                size="sm"
+                variant="secondary"
+              >
                 Retry
               </Button>
             </div>

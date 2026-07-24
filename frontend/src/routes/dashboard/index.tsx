@@ -67,7 +67,8 @@ function OverviewPage() {
     user,
     loading,
     requestsLoading,
-    loadingMore,
+    requestsPage,
+    hasPreviousRequests,
     hasMoreRequests,
     requestFilters,
     domains,
@@ -77,7 +78,8 @@ function OverviewPage() {
     setSelectedDomainId,
     setSelectedRequest,
     setRequestFilters,
-    loadMoreRequests,
+    goToPreviousRequests,
+    goToNextRequests,
     selectedRequest,
     setNewDomainOpen,
   } = useDashboard()
@@ -224,12 +226,14 @@ function OverviewPage() {
 
       <RequestList
         filters={requestFilters}
-        hasMore={hasMoreRequests}
+        hasNext={hasMoreRequests}
+        hasPrevious={hasPreviousRequests}
         loading={loading || requestsLoading}
-        loadingMore={loadingMore}
         onFiltersChange={setRequestFilters}
-        onLoadMore={() => void loadMoreRequests()}
+        onNext={goToNextRequests}
+        onPrevious={goToPreviousRequests}
         onSelect={setSelectedRequest}
+        page={requestsPage}
         requests={visibleRequests}
         selectedId={selectedRequest?.id}
       />

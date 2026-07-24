@@ -34,7 +34,8 @@ type DashboardContextValue = {
   streamState: StreamState
   loading: boolean
   requestsLoading: boolean
-  loadingMore: boolean
+  requestsPage: number
+  hasPreviousRequests: boolean
   hasMoreRequests: boolean
   requestFilters: RequestFilters
   error: string
@@ -43,7 +44,8 @@ type DashboardContextValue = {
   setSelectedDomainId: (id: string) => void
   setSelectedRequest: (request?: CapturedRequest) => void
   setRequestFilters: (filters: RequestFilters) => void
-  loadMoreRequests: () => Promise<void>
+  goToPreviousRequests: () => void
+  goToNextRequests: () => void
   loadDashboard: () => Promise<void>
   onDomainCreated: (domain: Domain) => void
   revokeToken: (id: string) => Promise<void>
@@ -54,7 +56,7 @@ type DashboardContextValue = {
 
 const DashboardContext = createContext<DashboardContextValue | null>(null)
 
-const PAGE_SIZE = 50
+const PAGE_SIZE = 20
 
 export function DashboardProvider({
   user,
@@ -73,17 +75,25 @@ export function DashboardProvider({
   const [streamState, setStreamState] = useState<StreamState>("closed")
   const [loading, setLoading] = useState(true)
   const [requestsLoading, setRequestsLoading] = useState(false)
-  const [loadingMore, setLoadingMore] = useState(false)
+  const [page, setPage] = useState(0)
+  const [pageCursors, setPageCursors] = useState<(string | undefined)[]>([
+    undefined,
+  ])
   const [nextCursor, setNextCursor] = useState<string>()
   const [requestFilters, setRequestFiltersState] =
     useState<RequestFilters>(emptyFilters)
   const [newDomainOpen, setNewDomainOpen] = useState(false)
   const [error, setError] = useState("")
   const requestFiltersRef = useRef(requestFilters)
+  const pageRef = useRef(page)
 
   useEffect(() => {
     requestFiltersRef.current = requestFilters
   }, [requestFilters])
+
+  useEffect(() => {
+    pageRef.current = page
+  }, [page])
 
   const selectedDomain = useMemo(
     () =>
@@ -98,6 +108,12 @@ export function DashboardProvider({
         : requests,
     [requests, selectedDomain]
   )
+
+  const resetRequestPages = useCallback(() => {
+    setPage(0)
+    setPageCursors([undefined])
+    setNextCursor(undefined)
+  }, [])
 
   const loadDashboard = useCallback(async () => {
     setLoading(true)
@@ -114,7 +130,7 @@ export function DashboardProvider({
         setSelectedDomainId(domainId)
       } else {
         setRequests([])
-        setNextCursor(undefined)
+        resetRequestPages()
       }
     } catch (caught) {
       setError(
@@ -125,17 +141,19 @@ export function DashboardProvider({
     } finally {
       setLoading(false)
     }
-  }, [selectedDomainId])
+  }, [resetRequestPages, selectedDomainId])
 
   useEffect(() => {
     const timeout = window.setTimeout(() => void loadDashboard(), 0)
     return () => window.clearTimeout(timeout)
   }, [loadDashboard])
 
+  const pageCursor = pageCursors[page]
+
   useEffect(() => {
     if (!selectedDomainId) {
       setRequests([])
-      setNextCursor(undefined)
+      resetRequestPages()
       return
     }
 
@@ -146,12 +164,15 @@ export function DashboardProvider({
     void api
       .listRequests(
         selectedDomainId,
-        toListRequestsQuery(requestFilters, { limit: PAGE_SIZE })
+        toListRequestsQuery(requestFilters, {
+          cursor: pageCursor,
+          limit: PAGE_SIZE,
+        })
       )
-      .then((page) => {
+      .then((result) => {
         if (cancelled) return
-        setRequests(page.items)
-        setNextCursor(page.nextCursor)
+        setRequests(result.items)
+        setNextCursor(result.nextCursor)
       })
       .catch((caught) => {
         if (cancelled) return
@@ -172,7 +193,7 @@ export function DashboardProvider({
     return () => {
       cancelled = true
     }
-  }, [selectedDomainId, requestFilters])
+  }, [page, pageCursor, requestFilters, resetRequestPages, selectedDomainId])
 
   useEffect(() => {
     if (!selectedDomainId) return
@@ -190,15 +211,25 @@ export function DashboardProvider({
           case "request.created":
           case "request.updated":
             setRequests((current) => {
-              if (
-                !requestMatchesFilters(event.request, requestFiltersRef.current)
-              ) {
+              const matches = requestMatchesFilters(
+                event.request,
+                requestFiltersRef.current
+              )
+              const exists = current.some(
+                (item) => item.id === event.request.id
+              )
+              if (!matches) {
                 return current.filter((item) => item.id !== event.request.id)
               }
-              return [
-                event.request,
-                ...current.filter((item) => item.id !== event.request.id),
-              ]
+              if (exists) {
+                return current.map((item) =>
+                  item.id === event.request.id ? event.request : item
+                )
+              }
+              if (pageRef.current !== 0 || event.type !== "request.created") {
+                return current
+              }
+              return [event.request, ...current].slice(0, PAGE_SIZE)
             })
             setSelectedRequest((current) =>
               current?.id === event.request.id ? event.request : current
@@ -213,37 +244,33 @@ export function DashboardProvider({
     })
   }, [selectedDomainId])
 
-  const loadMoreRequests = useCallback(async () => {
-    if (!selectedDomainId || !nextCursor || loadingMore) return
-    setLoadingMore(true)
-    setError("")
-    try {
-      const page = await api.listRequests(
-        selectedDomainId,
-        toListRequestsQuery(requestFilters, {
-          cursor: nextCursor,
-          limit: PAGE_SIZE,
-        })
-      )
-      setRequests((current) => {
-        const seen = new Set(current.map((item) => item.id))
-        return [...current, ...page.items.filter((item) => !seen.has(item.id))]
-      })
-      setNextCursor(page.nextCursor)
-    } catch (caught) {
-      setError(
-        caught instanceof ApiError
-          ? caught.message
-          : "Could not load more requests."
-      )
-    } finally {
-      setLoadingMore(false)
-    }
-  }, [loadingMore, nextCursor, requestFilters, selectedDomainId])
-
   const setRequestFilters = useCallback((filters: RequestFilters) => {
     setRequestFiltersState(filters)
+    setPage(0)
+    setPageCursors([undefined])
+    setNextCursor(undefined)
   }, [])
+
+  const setSelectedDomainIdAndReset = useCallback((id: string) => {
+    setSelectedDomainId(id)
+    setPage(0)
+    setPageCursors([undefined])
+    setNextCursor(undefined)
+  }, [])
+
+  const goToPreviousRequests = useCallback(() => {
+    setPage((current) => Math.max(0, current - 1))
+  }, [])
+
+  const goToNextRequests = useCallback(() => {
+    if (!nextCursor) return
+    setPageCursors((current) => {
+      const next = current.slice(0, page + 1)
+      next[page + 1] = nextCursor
+      return next
+    })
+    setPage((current) => current + 1)
+  }, [nextCursor, page])
 
   async function signOut() {
     try {
@@ -261,7 +288,7 @@ export function DashboardProvider({
 
   function onDomainCreated(domain: Domain) {
     setDomains((current) => [domain, ...current])
-    setSelectedDomainId(domain.id)
+    setSelectedDomainIdAndReset(domain.id)
   }
 
   const onlineCount = domains.filter(
@@ -281,16 +308,18 @@ export function DashboardProvider({
         streamState,
         loading,
         requestsLoading,
-        loadingMore,
+        requestsPage: page + 1,
+        hasPreviousRequests: page > 0,
         hasMoreRequests: Boolean(nextCursor),
         requestFilters,
         error,
         newDomainOpen,
         setNewDomainOpen,
-        setSelectedDomainId,
+        setSelectedDomainId: setSelectedDomainIdAndReset,
         setSelectedRequest,
         setRequestFilters,
-        loadMoreRequests,
+        goToPreviousRequests,
+        goToNextRequests,
         loadDashboard,
         onDomainCreated,
         revokeToken,

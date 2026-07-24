@@ -9,10 +9,12 @@ export type TokenSummary = components["schemas"]["TokenSummary"]
 export type Problem = components["schemas"]["Problem"]
 
 export type StatusClass = "" | "2xx" | "3xx" | "4xx" | "5xx"
+export type PathMode = "include" | "exclude"
 
 export type RequestFilters = {
   method: string
   path: string
+  pathMode: PathMode
   statusClass: StatusClass
 }
 
@@ -21,6 +23,7 @@ export type ListRequestsQuery = {
   limit?: number
   method?: string
   path?: string
+  pathMode?: PathMode
   statusMin?: number
   statusMax?: number
 }
@@ -48,6 +51,7 @@ const apiBase =
 const emptyRequestFilters: RequestFilters = {
   method: "",
   path: "",
+  pathMode: "include",
   statusClass: "",
 }
 
@@ -82,7 +86,7 @@ export function toListRequestsQuery(
   options: { cursor?: string; limit?: number } = {}
 ): ListRequestsQuery {
   const query: ListRequestsQuery = {
-    limit: options.limit ?? 50,
+    limit: options.limit ?? 20,
   }
   if (options.cursor) {
     query.cursor = options.cursor
@@ -92,6 +96,7 @@ export function toListRequestsQuery(
   }
   if (filters.path) {
     query.path = filters.path
+    query.pathMode = filters.pathMode
   }
   Object.assign(query, statusClassRange(filters.statusClass))
   return query
@@ -107,11 +112,13 @@ export function requestMatchesFilters(
   ) {
     return false
   }
-  if (
-    filters.path &&
-    !request.path.toLowerCase().includes(filters.path.toLowerCase())
-  ) {
-    return false
+  if (filters.path) {
+    const matches = request.path
+      .toLowerCase()
+      .includes(filters.path.toLowerCase())
+    if (filters.pathMode === "exclude" ? matches : !matches) {
+      return false
+    }
   }
   if (filters.statusClass) {
     const status = request.response?.status
@@ -238,6 +245,9 @@ export const api = {
     }
     if (query.path) {
       params.set("path", query.path)
+    }
+    if (query.pathMode) {
+      params.set("pathMode", query.pathMode)
     }
     if (query.statusMin != null) {
       params.set("statusMin", String(query.statusMin))

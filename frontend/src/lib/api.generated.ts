@@ -684,6 +684,8 @@ export interface operations {
         method?: string
         /** @description Case-insensitive substring match against the request path. */
         path?: string
+        /** @description Whether path matches are included or excluded. */
+        pathMode?: "include" | "exclude"
         /** @description Inclusive minimum response status code. */
         statusMin?: number
         /** @description Inclusive maximum response status code. */

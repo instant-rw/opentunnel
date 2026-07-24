@@ -3,27 +3,25 @@ import {
   CheckIcon,
   EyeIcon,
   EyeSlashIcon,
-  BroadcastIcon,
   ShieldCheckIcon,
 } from "@phosphor-icons/react"
 import { useNavigate } from "@tanstack/react-router"
-import { useState, type FormEvent } from "react"
+import { useState } from "react"
+import type { FormEvent } from "react"
 
 import { DeviceApproved } from "@/components/device-approved"
+import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Spinner } from "@/components/ui/spinner"
-import { api, ApiError, type User } from "@/lib/api"
+import { api, ApiError } from "@/lib/api"
+import type { User } from "@/lib/api"
 import { clearUserCodeFromUrl } from "@/lib/device-auth"
 
 type AuthMode = "login" | "register"
 
-export function AuthScreen({
-  userCode,
-}: {
-  userCode?: string
-}) {
+export function AuthScreen({ userCode }: { userCode?: string }) {
   const navigate = useNavigate()
   const [mode, setMode] = useState<AuthMode>("login")
   const [email, setEmail] = useState("")
@@ -57,7 +55,7 @@ export function AuthScreen({
       setError(
         caught instanceof ApiError
           ? caught.message
-          : "Something went wrong. Please try again.",
+          : "Something went wrong. Please try again."
       )
     } finally {
       setLoading(false)
@@ -66,9 +64,7 @@ export function AuthScreen({
 
   if (approvedUser) {
     return (
-      <DeviceApproved
-        onContinue={() => void navigate({ to: "/dashboard" })}
-      />
+      <DeviceApproved onContinue={() => void navigate({ to: "/dashboard" })} />
     )
   }
 
@@ -76,9 +72,7 @@ export function AuthScreen({
     <main className="grid min-h-svh lg:grid-cols-2">
       <section className="relative hidden flex-col justify-between bg-[linear-gradient(160deg,_oklch(0.28_0.04_250),_oklch(0.18_0.03_230))] p-10 text-white lg:flex">
         <a className="flex items-center gap-2 text-sm font-medium" href="/">
-          <span className="flex size-8 items-center justify-center bg-white/10">
-            <BroadcastIcon className="size-4" />
-          </span>
+          <Logo className="size-7" />
           OpenTunnel
         </a>
         <div className="max-w-md space-y-4">
@@ -109,7 +103,7 @@ export function AuthScreen({
         </p>
       </section>
 
-      <section className="flex flex-col justify-between bg-[radial-gradient(circle_at_top,_oklch(0.98_0.01_240),_oklch(0.96_0.01_220))] p-6 sm:p-10">
+      <section className="flex flex-col justify-between bg-background p-6 sm:p-10">
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6">
           {userCode ? (
             <div className="flex items-start gap-3 border border-emerald-500/30 bg-emerald-500/10 p-3">
@@ -127,9 +121,6 @@ export function AuthScreen({
           ) : null}
 
           <div className="space-y-2">
-            <span className="flex items-center gap-2 text-sm font-medium lg:hidden">
-              <BroadcastIcon className="size-4" /> OpenTunnel
-            </span>
             <h2 className="font-heading text-2xl font-medium">
               {mode === "login" ? "Welcome back" : "Create your account"}
             </h2>
@@ -202,7 +193,7 @@ export function AuthScreen({
               className="font-medium text-foreground underline-offset-4 hover:underline"
               onClick={() =>
                 setMode((current) =>
-                  current === "login" ? "register" : "login",
+                  current === "login" ? "register" : "login"
                 )
               }
               type="button"

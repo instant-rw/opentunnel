@@ -38,7 +38,8 @@ function TunnelsPage() {
     domains,
     loading,
     requestsLoading,
-    loadingMore,
+    requestsPage,
+    hasPreviousRequests,
     hasMoreRequests,
     requestFilters,
     selectedDomain,
@@ -47,7 +48,8 @@ function TunnelsPage() {
     visibleRequests,
     setSelectedRequest,
     setRequestFilters,
-    loadMoreRequests,
+    goToPreviousRequests,
+    goToNextRequests,
     selectedRequest,
     setNewDomainOpen,
   } = useDashboard()
@@ -191,12 +193,14 @@ function TunnelsPage() {
 
       <RequestList
         filters={requestFilters}
-        hasMore={hasMoreRequests}
+        hasNext={hasMoreRequests}
+        hasPrevious={hasPreviousRequests}
         loading={loading || requestsLoading}
-        loadingMore={loadingMore}
         onFiltersChange={setRequestFilters}
-        onLoadMore={() => void loadMoreRequests()}
+        onNext={goToNextRequests}
+        onPrevious={goToPreviousRequests}
         onSelect={setSelectedRequest}
+        page={requestsPage}
         requests={visibleRequests}
         selectedId={selectedRequest?.id}
       />

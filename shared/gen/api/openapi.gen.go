@@ -49,6 +49,12 @@ const (
 	Succeeded ReplayStatus = "succeeded"
 )
 
+// Defines values for ListRequestsParamsPathMode.
+const (
+	Exclude ListRequestsParamsPathMode = "exclude"
+	Include ListRequestsParamsPathMode = "include"
+)
+
 // BodyCapture defines model for BodyCapture.
 type BodyCapture struct {
 	Base64    []byte `json:"base64"`
@@ -206,12 +212,18 @@ type ListRequestsParams struct {
 	// Path Case-insensitive substring match against the request path.
 	Path *string `form:"path,omitempty" json:"path,omitempty"`
 
+	// PathMode Whether path matches are included or excluded.
+	PathMode *ListRequestsParamsPathMode `form:"pathMode,omitempty" json:"pathMode,omitempty"`
+
 	// StatusMin Inclusive minimum response status code.
 	StatusMin *int `form:"statusMin,omitempty" json:"statusMin,omitempty"`
 
 	// StatusMax Inclusive maximum response status code.
 	StatusMax *int `form:"statusMax,omitempty" json:"statusMax,omitempty"`
 }
+
+// ListRequestsParamsPathMode defines parameters for ListRequests.
+type ListRequestsParamsPathMode string
 
 // LoginJSONRequestBody defines body for Login for application/json ContentType.
 type LoginJSONRequestBody = LoginRequest
@@ -1109,6 +1121,22 @@ func NewListRequestsRequest(server string, domainId DomainId, params *ListReques
 		if params.Path != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "path", runtime.ParamLocationQuery, *params.Path); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.PathMode != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "pathMode", runtime.ParamLocationQuery, *params.PathMode); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -3064,6 +3092,14 @@ func (siw *ServerInterfaceWrapper) ListRequests(w http.ResponseWriter, r *http.R
 	err = runtime.BindQueryParameter("form", true, false, "path", r.URL.Query(), &params.Path)
 	if err != nil {
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "path", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "pathMode" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "pathMode", r.URL.Query(), &params.PathMode)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "pathMode", Err: err})
 		return
 	}
 
