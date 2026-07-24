@@ -13,8 +13,8 @@ import (
 	"github.com/google/uuid"
 	openapi_types "github.com/oapi-codegen/runtime/types"
 	"github.com/opentunnel/opentunnel/backend/internal/auth"
-	"github.com/opentunnel/opentunnel/shared/gen/api"
 	"github.com/opentunnel/opentunnel/backend/internal/storage"
+	"github.com/opentunnel/opentunnel/shared/gen/api"
 )
 
 const (
@@ -26,6 +26,23 @@ var (
 	domainPattern = regexp.MustCompile(`^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$`)
 	reservedSlugs = map[string]struct{}{
 		"api": {}, "app": {}, "dashboard": {}, "docs": {}, "help": {}, "status": {}, "www": {},
+		"cli": {}, "connect": {}, "domains": {}, "login": {}, "logout": {}, "requests": {}, "up": {}, "update": {},
+		"devices": {}, "tokens": {}, "users": {}, "verify": {}, "web": {}, "webhook": {}, "websocket": {},
+		"auth": {}, "tunnel": {}, "admin": {}, "static": {}, "assets": {}, "test": {}, "sandbox": {},
+		"dashboard2": {}, "public": {}, "private": {}, "register": {}, "portal": {}, "account": {},
+		"settings": {}, "support": {}, "billing": {}, "invoice": {}, "checkout": {}, "payments": {},
+		"subscription": {}, "api2": {}, "old": {}, "experimental": {}, "oauth": {}, "sso": {}, "signin": {}, "signup": {},
+		"internal": {}, "external": {}, "blog": {}, "forum": {}, "forums": {}, "about": {}, "contact": {},
+		"terms": {}, "privacy": {}, "license": {}, "legal": {}, "partners": {}, "careers": {}, "jobs": {},
+		"roadmap": {}, "roadmaps": {}, "news": {}, "press": {}, "release": {}, "releases": {}, "store": {},
+		"shop": {}, "cart": {}, "checkout2": {}, "promo": {}, "promotions": {}, "events": {}, "event": {},
+		"calendar": {}, "calendars": {}, "faq": {}, "team": {}, "teams": {}, "contribute": {}, "github": {},
+		"gitlab": {}, "bitbucket": {}, "slack": {}, "discord": {}, "feedback": {}, "newsletter": {}, "subscribe": {},
+		"unsubscribe": {}, "mail": {}, "email": {}, "media": {}, "images": {}, "img": {}, "photo": {}, "photos": {},
+		"picture": {}, "pictures": {}, "avatar": {}, "avatars": {}, "cdn": {}, "edge": {}, "node": {}, "nodes": {},
+		"metrics": {}, "analytics": {}, "stat": {}, "stats": {}, "data": {}, "export": {}, "import": {},
+		"download": {}, "downloads": {}, "upload": {}, "uploads": {}, "api-docs": {}, "swagger": {},
+		"openapi": {}, "graph": {}, "graphql": {}, "rest": {}, "restapi": {}, "v1": {}, "v2": {}, "v3": {},
 	}
 )
 

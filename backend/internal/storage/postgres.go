@@ -90,6 +90,16 @@ type CapturedRequest struct {
 	ReceivedAt            time.Time
 }
 
+// CapturedRequestFilter narrows list results. Empty Method/Path mean no filter.
+type CapturedRequestFilter struct {
+	Before    *time.Time
+	Method    string
+	Path      string
+	StatusMin *int
+	StatusMax *int
+	Limit     int
+}
+
 type ReplayAttempt struct {
 	ID             uuid.UUID
 	RequestID      uuid.UUID
@@ -570,9 +580,15 @@ func (s *Store) UpdateCapturedRequestBody(
 func (s *Store) ListCapturedRequests(
 	ctx context.Context,
 	userID, domainID uuid.UUID,
-	before *time.Time,
-	limit int,
+	filter CapturedRequestFilter,
 ) ([]CapturedRequest, error) {
+	pathPattern := ""
+	if filter.Path != "" {
+		escaped := strings.ReplaceAll(filter.Path, `\`, `\\`)
+		escaped = strings.ReplaceAll(escaped, `%`, `\%`)
+		escaped = strings.ReplaceAll(escaped, `_`, `\_`)
+		pathPattern = "%" + escaped + "%"
+	}
 	rows, err := s.pool.Query(ctx, `
 		SELECT r.id, r.domain_id, r.method, r.path, r.query, r.request_headers,
 			r.request_body, COALESCE(r.request_body_size, 0), r.request_body_truncated,
@@ -581,9 +597,15 @@ func (s *Store) ListCapturedRequests(
 			r.duration_ms, r.received_at
 		FROM requests r
 		JOIN domains d ON d.id = r.domain_id
-		WHERE d.user_id = $1 AND d.id = $2 AND ($3::timestamptz IS NULL OR r.received_at < $3)
-		ORDER BY r.received_at DESC, r.id DESC LIMIT $4`,
-		userID, domainID, before, limit,
+		WHERE d.user_id = $1 AND d.id = $2
+			AND ($3::timestamptz IS NULL OR r.received_at < $3)
+			AND ($4 = '' OR upper(r.method) = upper($4))
+			AND ($5 = '' OR r.path ILIKE $5 ESCAPE '\')
+			AND ($6::int IS NULL OR r.response_status >= $6)
+			AND ($7::int IS NULL OR r.response_status <= $7)
+		ORDER BY r.received_at DESC, r.id DESC LIMIT $8`,
+		userID, domainID, filter.Before, filter.Method, pathPattern,
+		filter.StatusMin, filter.StatusMax, filter.Limit,
 	)
 	if err != nil {
 		return nil, err

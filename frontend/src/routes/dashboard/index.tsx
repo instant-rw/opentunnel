@@ -66,12 +66,18 @@ function OverviewPage() {
   const {
     user,
     loading,
+    requestsLoading,
+    loadingMore,
+    hasMoreRequests,
+    requestFilters,
     domains,
     visibleRequests,
     onlineCount,
     selectedDomain,
     setSelectedDomainId,
     setSelectedRequest,
+    setRequestFilters,
+    loadMoreRequests,
     selectedRequest,
     setNewDomainOpen,
   } = useDashboard()
@@ -81,7 +87,7 @@ function OverviewPage() {
     (request) =>
       request.response &&
       request.response.status >= 200 &&
-      request.response.status < 400,
+      request.response.status < 400
   ).length
   const successRate = visibleRequests.length
     ? Math.round((successful / visibleRequests.length) * 100)
@@ -90,8 +96,8 @@ function OverviewPage() {
     ? `${Math.round(
         visibleRequests.reduce(
           (total, request) => total + (request.response?.durationMs ?? 0),
-          0,
-        ) / visibleRequests.length,
+          0
+        ) / visibleRequests.length
       )} ms`
     : "—"
 
@@ -159,14 +165,16 @@ function OverviewPage() {
                 <Skeleton className="h-16 w-full" />
               </>
             ) : domains.length ? (
-              domains.slice(0, 3).map((domain) => (
-                <TunnelCard
-                  domain={domain}
-                  key={domain.id}
-                  onSelect={() => setSelectedDomainId(domain.id)}
-                  selected={domain.id === selectedDomain?.id}
-                />
-              ))
+              domains
+                .slice(0, 3)
+                .map((domain) => (
+                  <TunnelCard
+                    domain={domain}
+                    key={domain.id}
+                    onSelect={() => setSelectedDomainId(domain.id)}
+                    selected={domain.id === selectedDomain?.id}
+                  />
+                ))
             ) : (
               <Empty className="border-0 py-8">
                 <EmptyHeader>
@@ -215,7 +223,12 @@ function OverviewPage() {
       </div>
 
       <RequestList
-        loading={loading}
+        filters={requestFilters}
+        hasMore={hasMoreRequests}
+        loading={loading || requestsLoading}
+        loadingMore={loadingMore}
+        onFiltersChange={setRequestFilters}
+        onLoadMore={() => void loadMoreRequests()}
         onSelect={setSelectedRequest}
         requests={visibleRequests}
         selectedId={selectedRequest?.id}

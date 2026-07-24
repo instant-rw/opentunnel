@@ -74,7 +74,7 @@ function CliSetupPage() {
               step={3}
               title="Start a tunnel"
             >
-              <CommandBlock value="opentunnel up 3000 --domain checkout" />
+              <CommandBlock value="opentunnel up 3000 --domain <your-domain>" />
             </SetupStep>
           </CardContent>
         </Card>
@@ -90,11 +90,11 @@ function CliSetupPage() {
           </CardHeader>
           <CardContent className="font-mono text-xs leading-relaxed whitespace-pre-wrap">
             <span className="text-white/50">
-              $ opentunnel up 3000 --domain checkout
+              $ opentunnel up 3000 --domain &lt;your-domain&gt;
             </span>
             {"\n\n"}
             <span className="text-emerald-400">
-              ✓ Authenticated as troy@example.com
+              ✓ Authenticated as johndoe@example.com
             </span>
             {"\n"}
             <span className="text-emerald-400">
@@ -103,7 +103,7 @@ function CliSetupPage() {
             {"\n\n"}
             <span className="text-white/50">Public URL</span>
             {"\n"}
-            <span className="text-sky-300">https://checkout.opts.ink</span>
+            <span className="text-sky-300">https://&lt;your-domain&gt;.opts.ink</span>
             {"\n\n"}
             <span className="text-white/50">Forwarding</span>
             {"\n"}

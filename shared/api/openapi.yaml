@@ -192,6 +192,30 @@ paths:
             minimum: 1
             maximum: 100
             default: 50
+        - name: method
+          in: query
+          description: Exact HTTP method filter (case-insensitive).
+          schema:
+            type: string
+        - name: path
+          in: query
+          description: Case-insensitive substring match against the request path.
+          schema:
+            type: string
+        - name: statusMin
+          in: query
+          description: Inclusive minimum response status code.
+          schema:
+            type: integer
+            minimum: 100
+            maximum: 599
+        - name: statusMax
+          in: query
+          description: Inclusive maximum response status code.
+          schema:
+            type: integer
+            minimum: 100
+            maximum: 599
       responses:
         "200":
           description: Captured requests.

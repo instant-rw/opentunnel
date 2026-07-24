@@ -6,810 +6,818 @@
 export interface paths {
   "/healthz": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["getHealth"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations["getHealth"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/auth/register": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["register"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations["register"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/auth/login": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["login"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations["login"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/auth/logout": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["logout"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations["logout"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/auth/me": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["getCurrentUser"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations["getCurrentUser"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/device/authorizations": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["createDeviceAuthorization"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations["createDeviceAuthorization"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/device/authorizations/{userCode}/approve": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["approveDeviceAuthorization"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations["approveDeviceAuthorization"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/device/token": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["exchangeDeviceCode"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations["exchangeDeviceCode"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/domains": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["listDomains"];
-    put?: never;
-    post: operations["createDomain"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations["listDomains"]
+    put?: never
+    post: operations["createDomain"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/domains/{domainId}": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["getDomain"];
-    put?: never;
-    post?: never;
-    delete: operations["deleteDomain"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations["getDomain"]
+    put?: never
+    post?: never
+    delete: operations["deleteDomain"]
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/domains/{domainId}/requests": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["listRequests"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations["listRequests"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/domains/{domainId}/events": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["streamDomainEvents"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations["streamDomainEvents"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/requests/{requestId}": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["getRequest"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations["getRequest"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/requests/{requestId}/replays": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["replayRequest"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post: operations["replayRequest"]
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/tokens": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["listTokens"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations["listTokens"]
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   "/tokens/{tokenId}": {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations["revokeToken"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    delete: operations["revokeToken"]
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
-export type webhooks = Record<string, never>;
+export type webhooks = Record<string, never>
 export interface components {
   schemas: {
     Health: {
       /** @enum {string} */
-      status: "ok";
-    };
+      status: "ok"
+    }
     Problem: {
       /** Format: uri-reference */
-      type: string;
-      title: string;
-      status: number;
-      detail?: string;
+      type: string
+      title: string
+      status: number
+      detail?: string
       /** Format: uri-reference */
-      instance?: string;
-      code?: string;
-    };
+      instance?: string
+      code?: string
+    }
     RegisterRequest: {
       /** Format: email */
-      email: string;
+      email: string
       /** Format: password */
-      password: string;
-    };
-    LoginRequest: components["schemas"]["RegisterRequest"];
+      password: string
+    }
+    LoginRequest: components["schemas"]["RegisterRequest"]
     User: {
       /** Format: uuid */
-      id: string;
+      id: string
       /** Format: email */
-      email: string;
+      email: string
       /** Format: date-time */
-      createdAt: string;
-    };
+      createdAt: string
+    }
     DeviceAuthorization: {
-      deviceCode: string;
-      userCode: string;
+      deviceCode: string
+      userCode: string
       /** Format: uri */
-      verificationUri: string;
+      verificationUri: string
       /** Format: uri */
-      verificationUriComplete: string;
-      expiresIn: number;
-      interval: number;
-    };
+      verificationUriComplete: string
+      expiresIn: number
+      interval: number
+    }
     DeviceTokenRequest: {
-      deviceCode: string;
-    };
+      deviceCode: string
+    }
     DeviceToken: {
-      accessToken: string;
+      accessToken: string
       /** @enum {string} */
-      tokenType: "Bearer";
-    };
+      tokenType: "Bearer"
+    }
     CreateDomainRequest: {
-      slug: string;
-    };
+      slug: string
+    }
     Domain: {
       /** Format: uuid */
-      id: string;
-      slug: string;
-      hostname: string;
+      id: string
+      slug: string
+      hostname: string
       /** @enum {string} */
-      status: "offline" | "online";
+      status: "offline" | "online"
       /** Format: date-time */
-      createdAt: string;
-    };
+      createdAt: string
+    }
     Header: {
-      name: string;
-      values: string[];
-    };
+      name: string
+      values: string[]
+    }
     BodyCapture: {
       /** Format: byte */
-      base64: string;
+      base64: string
       /** Format: int64 */
-      size: number;
-      truncated: boolean;
-    };
+      size: number
+      truncated: boolean
+    }
     CapturedResponse: {
-      status: number;
-      headers: components["schemas"]["Header"][];
-      body?: components["schemas"]["BodyCapture"];
+      status: number
+      headers: components["schemas"]["Header"][]
+      body?: components["schemas"]["BodyCapture"]
       /** Format: int64 */
-      durationMs: number;
-    };
+      durationMs: number
+    }
     CapturedRequest: {
       /** Format: uuid */
-      id: string;
+      id: string
       /** Format: uuid */
-      domainId: string;
-      method: string;
-      path: string;
-      query: string;
-      headers: components["schemas"]["Header"][];
-      body?: components["schemas"]["BodyCapture"];
-      response?: components["schemas"]["CapturedResponse"];
+      domainId: string
+      method: string
+      path: string
+      query: string
+      headers: components["schemas"]["Header"][]
+      body?: components["schemas"]["BodyCapture"]
+      response?: components["schemas"]["CapturedResponse"]
       /** Format: date-time */
-      receivedAt: string;
-    };
+      receivedAt: string
+    }
     RequestPage: {
-      items: components["schemas"]["CapturedRequest"][];
-      nextCursor?: string;
-    };
+      items: components["schemas"]["CapturedRequest"][]
+      nextCursor?: string
+    }
     Replay: {
       /** Format: uuid */
-      id: string;
+      id: string
       /** Format: uuid */
-      requestId: string;
+      requestId: string
       /** @enum {string} */
-      status: "queued" | "running" | "succeeded" | "failed";
+      status: "queued" | "running" | "succeeded" | "failed"
       /** Format: date-time */
-      createdAt: string;
-    };
+      createdAt: string
+    }
     TokenSummary: {
       /** Format: uuid */
-      id: string;
-      name: string;
+      id: string
+      name: string
       /** Format: date-time */
-      lastUsedAt?: string;
+      lastUsedAt?: string
       /** Format: date-time */
-      createdAt: string;
-    };
-  };
+      createdAt: string
+    }
+  }
   responses: {
     /** @description Request failed. */
     Error: {
       headers: {
-        [name: string]: unknown;
-      };
+        [name: string]: unknown
+      }
       content: {
-        "application/problem+json": components["schemas"]["Problem"];
-      };
-    };
-  };
+        "application/problem+json": components["schemas"]["Problem"]
+      }
+    }
+  }
   parameters: {
-    UserCode: string;
-    DomainId: string;
-    RequestId: string;
-  };
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    UserCode: string
+    DomainId: string
+    RequestId: string
+  }
+  requestBodies: never
+  headers: never
+  pathItems: never
 }
-export type $defs = Record<string, never>;
+export type $defs = Record<string, never>
 export interface operations {
   getHealth: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Process is healthy. */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["Health"];
-        };
-      };
-    };
-  };
+          "application/json": components["schemas"]["Health"]
+        }
+      }
+    }
+  }
   register: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
-        "application/json": components["schemas"]["RegisterRequest"];
-      };
-    };
+        "application/json": components["schemas"]["RegisterRequest"]
+      }
+    }
     responses: {
       /** @description Account created. */
       201: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["User"];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["User"]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   login: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
-        "application/json": components["schemas"]["LoginRequest"];
-      };
-    };
+        "application/json": components["schemas"]["LoginRequest"]
+      }
+    }
     responses: {
       /** @description Session established. */
       204: {
         headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   logout: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Session revoked. */
       204: {
         headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   getCurrentUser: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Current user. */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["User"];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["User"]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   createDeviceAuthorization: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Device authorization created. */
       201: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["DeviceAuthorization"];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["DeviceAuthorization"]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   approveDeviceAuthorization: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        userCode: components["parameters"]["UserCode"];
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        userCode: components["parameters"]["UserCode"]
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Device approved. */
       204: {
         headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   exchangeDeviceCode: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
-        "application/json": components["schemas"]["DeviceTokenRequest"];
-      };
-    };
+        "application/json": components["schemas"]["DeviceTokenRequest"]
+      }
+    }
     responses: {
       /** @description CLI token issued. */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["DeviceToken"];
-        };
-      };
+          "application/json": components["schemas"]["DeviceToken"]
+        }
+      }
       /** @description Authorization remains pending. */
       202: {
         headers: {
-          "Retry-After"?: number;
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "Retry-After"?: number
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   listDomains: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Owned domains. */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["Domain"][];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["Domain"][]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   createDomain: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreateDomainRequest"];
-      };
-    };
+        "application/json": components["schemas"]["CreateDomainRequest"]
+      }
+    }
     responses: {
       /** @description Domain allocated. */
       201: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["Domain"];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["Domain"]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   getDomain: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        domainId: components["parameters"]["DomainId"];
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        domainId: components["parameters"]["DomainId"]
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Domain details. */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["Domain"];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["Domain"]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   deleteDomain: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        domainId: components["parameters"]["DomainId"];
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        domainId: components["parameters"]["DomainId"]
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Domain released. */
       204: {
         headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   listRequests: {
     parameters: {
       query?: {
-        cursor?: string;
-        limit?: number;
-      };
-      header?: never;
+        cursor?: string
+        limit?: number
+        /** @description Exact HTTP method filter (case-insensitive). */
+        method?: string
+        /** @description Case-insensitive substring match against the request path. */
+        path?: string
+        /** @description Inclusive minimum response status code. */
+        statusMin?: number
+        /** @description Inclusive maximum response status code. */
+        statusMax?: number
+      }
+      header?: never
       path: {
-        domainId: components["parameters"]["DomainId"];
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        domainId: components["parameters"]["DomainId"]
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Captured requests. */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["RequestPage"];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["RequestPage"]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   streamDomainEvents: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        domainId: components["parameters"]["DomainId"];
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        domainId: components["parameters"]["DomainId"]
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Server-sent domain and request events. */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "text/event-stream": string;
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "text/event-stream": string
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   getRequest: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        requestId: components["parameters"]["RequestId"];
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        requestId: components["parameters"]["RequestId"]
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Captured request details. */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["CapturedRequest"];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["CapturedRequest"]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   replayRequest: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        requestId: components["parameters"]["RequestId"];
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        requestId: components["parameters"]["RequestId"]
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Replay queued on the active tunnel. */
       202: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["Replay"];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["Replay"]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   listTokens: {
     parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Revocable CLI tokens. */
       200: {
         headers: {
-          [name: string]: unknown;
-        };
+          [name: string]: unknown
+        }
         content: {
-          "application/json": components["schemas"]["TokenSummary"][];
-        };
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          "application/json": components["schemas"]["TokenSummary"][]
+        }
+      }
+      default: components["responses"]["Error"]
+    }
+  }
   revokeToken: {
     parameters: {
-      query?: never;
-      header?: never;
+      query?: never
+      header?: never
       path: {
-        tokenId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
+        tokenId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Token revoked. */
       204: {
         headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      default: components["responses"]["Error"];
-    };
-  };
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      default: components["responses"]["Error"]
+    }
+  }
 }

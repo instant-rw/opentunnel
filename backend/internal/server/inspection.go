@@ -13,8 +13,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/opentunnel/opentunnel/shared/gen/api"
 	"github.com/opentunnel/opentunnel/backend/internal/storage"
+	"github.com/opentunnel/opentunnel/shared/gen/api"
 )
 
 const redactedHeaderValue = "[REDACTED]"
@@ -23,7 +23,7 @@ type inspectionStore interface {
 	CreateCapturedRequest(context.Context, storage.CapturedRequest, int) (storage.CapturedRequest, error)
 	UpdateCapturedRequestBody(context.Context, uuid.UUID, []byte, int64, bool) error
 	CompleteCapturedRequest(context.Context, uuid.UUID, int, []storage.Header, []byte, int64, bool, int64) error
-	ListCapturedRequests(context.Context, uuid.UUID, uuid.UUID, *time.Time, int) ([]storage.CapturedRequest, error)
+	ListCapturedRequests(context.Context, uuid.UUID, uuid.UUID, storage.CapturedRequestFilter) ([]storage.CapturedRequest, error)
 	CapturedRequest(context.Context, uuid.UUID, uuid.UUID) (storage.CapturedRequest, error)
 	CreateReplayAttempt(context.Context, uuid.UUID, uuid.UUID) (storage.ReplayAttempt, error)
 	UpdateReplayAttempt(context.Context, uuid.UUID, string, *string, *int, *int64) error
@@ -128,7 +128,19 @@ func (s *Server) ListRequests(
 	if params.Limit != nil {
 		limit = *params.Limit
 	}
-	var before *time.Time
+	filter := storage.CapturedRequestFilter{Limit: limit + 1}
+	if params.Method != nil {
+		filter.Method = strings.TrimSpace(*params.Method)
+	}
+	if params.Path != nil {
+		filter.Path = strings.TrimSpace(*params.Path)
+	}
+	if params.StatusMin != nil {
+		filter.StatusMin = params.StatusMin
+	}
+	if params.StatusMax != nil {
+		filter.StatusMax = params.StatusMax
+	}
 	if params.Cursor != nil {
 		decoded, err := base64.RawURLEncoding.DecodeString(*params.Cursor)
 		if err != nil {
@@ -140,9 +152,11 @@ func (s *Server) ListRequests(
 			writeProblem(w, http.StatusBadRequest, "invalid_cursor", "Request cursor is invalid")
 			return
 		}
-		before = &parsed
+		filter.Before = &parsed
 	}
-	requests, err := s.inspection.ListCapturedRequests(r.Context(), userFromContext(r.Context()).ID, domainID, before, limit+1)
+	requests, err := s.inspection.ListCapturedRequests(
+		r.Context(), userFromContext(r.Context()).ID, domainID, filter,
+	)
 	if err != nil {
 		writeInternal(w)
 		return

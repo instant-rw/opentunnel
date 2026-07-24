@@ -37,11 +37,17 @@ function TunnelsPage() {
   const {
     domains,
     loading,
+    requestsLoading,
+    loadingMore,
+    hasMoreRequests,
+    requestFilters,
     selectedDomain,
     setSelectedDomainId,
     streamState,
     visibleRequests,
     setSelectedRequest,
+    setRequestFilters,
+    loadMoreRequests,
     selectedRequest,
     setNewDomainOpen,
   } = useDashboard()
@@ -99,7 +105,7 @@ function TunnelsPage() {
                         "size-1.5 rounded-full",
                         selectedDomain.status === "online"
                           ? "bg-emerald-500"
-                          : "bg-muted-foreground",
+                          : "bg-muted-foreground"
                       )}
                     />
                     {selectedDomain.status}
@@ -184,7 +190,12 @@ function TunnelsPage() {
       </div>
 
       <RequestList
-        loading={loading}
+        filters={requestFilters}
+        hasMore={hasMoreRequests}
+        loading={loading || requestsLoading}
+        loadingMore={loadingMore}
+        onFiltersChange={setRequestFilters}
+        onLoadMore={() => void loadMoreRequests()}
         onSelect={setSelectedRequest}
         requests={visibleRequests}
         selectedId={selectedRequest?.id}

@@ -199,6 +199,18 @@ type Error = Problem
 type ListRequestsParams struct {
 	Cursor *string `form:"cursor,omitempty" json:"cursor,omitempty"`
 	Limit  *int    `form:"limit,omitempty" json:"limit,omitempty"`
+
+	// Method Exact HTTP method filter (case-insensitive).
+	Method *string `form:"method,omitempty" json:"method,omitempty"`
+
+	// Path Case-insensitive substring match against the request path.
+	Path *string `form:"path,omitempty" json:"path,omitempty"`
+
+	// StatusMin Inclusive minimum response status code.
+	StatusMin *int `form:"statusMin,omitempty" json:"statusMin,omitempty"`
+
+	// StatusMax Inclusive maximum response status code.
+	StatusMax *int `form:"statusMax,omitempty" json:"statusMax,omitempty"`
 }
 
 // LoginJSONRequestBody defines body for Login for application/json ContentType.
@@ -1065,6 +1077,70 @@ func NewListRequestsRequest(server string, domainId DomainId, params *ListReques
 		if params.Limit != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "limit", runtime.ParamLocationQuery, *params.Limit); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Method != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "method", runtime.ParamLocationQuery, *params.Method); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.Path != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "path", runtime.ParamLocationQuery, *params.Path); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.StatusMin != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "statusMin", runtime.ParamLocationQuery, *params.StatusMin); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.StatusMax != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "statusMax", runtime.ParamLocationQuery, *params.StatusMax); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err
@@ -2972,6 +3048,38 @@ func (siw *ServerInterfaceWrapper) ListRequests(w http.ResponseWriter, r *http.R
 	err = runtime.BindQueryParameter("form", true, false, "limit", r.URL.Query(), &params.Limit)
 	if err != nil {
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "limit", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "method" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "method", r.URL.Query(), &params.Method)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "method", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "path" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "path", r.URL.Query(), &params.Path)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "path", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "statusMin" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "statusMin", r.URL.Query(), &params.StatusMin)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "statusMin", Err: err})
+		return
+	}
+
+	// ------------- Optional query parameter "statusMax" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "statusMax", r.URL.Query(), &params.StatusMax)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "statusMax", Err: err})
 		return
 	}
 

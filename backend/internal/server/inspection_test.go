@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/opentunnel/opentunnel/backend/internal/storage"
 	"github.com/opentunnel/opentunnel/shared/gen/api"
 	tunnelv1 "github.com/opentunnel/opentunnel/shared/gen/tunnel/v1"
-	"github.com/opentunnel/opentunnel/backend/internal/storage"
 )
 
 type inspectionFakeStore struct {
@@ -98,8 +98,7 @@ func (f *inspectionFakeStore) CompleteCapturedRequest(
 func (f *inspectionFakeStore) ListCapturedRequests(
 	_ context.Context,
 	userID, domainID uuid.UUID,
-	_ *time.Time,
-	_ int,
+	filter storage.CapturedRequestFilter,
 ) ([]storage.CapturedRequest, error) {
 	if userID != f.owner || domainID != f.domain.ID {
 		return nil, storage.ErrNotFound
@@ -108,7 +107,25 @@ func (f *inspectionFakeStore) ListCapturedRequests(
 	defer f.mu.Unlock()
 	result := make([]storage.CapturedRequest, 0, len(f.requests))
 	for _, request := range f.requests {
+		if filter.Before != nil && !request.ReceivedAt.Before(*filter.Before) {
+			continue
+		}
+		if filter.Method != "" && !strings.EqualFold(request.Method, filter.Method) {
+			continue
+		}
+		if filter.Path != "" && !strings.Contains(strings.ToLower(request.Path), strings.ToLower(filter.Path)) {
+			continue
+		}
+		if filter.StatusMin != nil && (request.ResponseStatus == nil || *request.ResponseStatus < *filter.StatusMin) {
+			continue
+		}
+		if filter.StatusMax != nil && (request.ResponseStatus == nil || *request.ResponseStatus > *filter.StatusMax) {
+			continue
+		}
 		result = append(result, request)
+	}
+	if filter.Limit > 0 && len(result) > filter.Limit {
+		result = result[:filter.Limit]
 	}
 	return result, nil
 }
@@ -216,6 +233,47 @@ func TestGetRequestIsOwnerScoped(t *testing.T) {
 				t.Fatalf("status = %d, want %d", response.Code, test.status)
 			}
 		})
+	}
+}
+
+func TestListRequestsAppliesFilters(t *testing.T) {
+	t.Parallel()
+	store := newInspectionFakeStore()
+	now := time.Now()
+	statusOK := 200
+	statusErr := 500
+	getReq := uuid.New()
+	postReq := uuid.New()
+	store.requests[getReq] = storage.CapturedRequest{
+		ID: getReq, DomainID: store.domain.ID, Method: "GET", Path: "/health",
+		ResponseStatus: &statusOK, ReceivedAt: now.Add(-time.Minute),
+	}
+	store.requests[postReq] = storage.CapturedRequest{
+		ID: postReq, DomainID: store.domain.ID, Method: "POST", Path: "/api/items",
+		ResponseStatus: &statusErr, ReceivedAt: now,
+	}
+	server := New(Config{}, store)
+	method := "POST"
+	path := "/api"
+	statusMin := 500
+	statusMax := 599
+	request := httptest.NewRequest(http.MethodGet, "/", nil)
+	request = request.WithContext(context.WithValue(
+		request.Context(), userContextKey, storage.User{ID: store.owner},
+	))
+	response := httptest.NewRecorder()
+	server.ListRequests(response, request, store.domain.ID, api.ListRequestsParams{
+		Method: &method, Path: &path, StatusMin: &statusMin, StatusMax: &statusMax,
+	})
+	if response.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", response.Code, http.StatusOK)
+	}
+	var page api.RequestPage
+	if err := json.NewDecoder(response.Body).Decode(&page); err != nil {
+		t.Fatalf("decode page: %v", err)
+	}
+	if len(page.Items) != 1 || page.Items[0].Id != postReq {
+		t.Fatalf("items = %+v, want only POST /api/items", page.Items)
 	}
 }
 

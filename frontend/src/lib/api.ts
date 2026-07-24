@@ -8,6 +8,23 @@ export type Replay = components["schemas"]["Replay"]
 export type TokenSummary = components["schemas"]["TokenSummary"]
 export type Problem = components["schemas"]["Problem"]
 
+export type StatusClass = "" | "2xx" | "3xx" | "4xx" | "5xx"
+
+export type RequestFilters = {
+  method: string
+  path: string
+  statusClass: StatusClass
+}
+
+export type ListRequestsQuery = {
+  cursor?: string
+  limit?: number
+  method?: string
+  path?: string
+  statusMin?: number
+  statusMax?: number
+}
+
 export class ApiError extends Error {
   readonly status: number
   readonly problem?: Problem
@@ -28,6 +45,94 @@ const apiBase =
   import.meta.env.VITE_API_URL?.replace(/\/$/, "") ||
   "http://localhost:8080/api/v1"
 
+const emptyRequestFilters: RequestFilters = {
+  method: "",
+  path: "",
+  statusClass: "",
+}
+
+export function emptyFilters(): RequestFilters {
+  return { ...emptyRequestFilters }
+}
+
+export function statusClassRange(
+  statusClass: StatusClass
+): Pick<ListRequestsQuery, "statusMin" | "statusMax"> {
+  switch (statusClass) {
+    case "2xx":
+      return { statusMin: 200, statusMax: 299 }
+    case "3xx":
+      return { statusMin: 300, statusMax: 399 }
+    case "4xx":
+      return { statusMin: 400, statusMax: 499 }
+    case "5xx":
+      return { statusMin: 500, statusMax: 599 }
+    case "":
+      return {}
+    default: {
+      const _exhaustive: never = statusClass
+      void _exhaustive
+      return {}
+    }
+  }
+}
+
+export function toListRequestsQuery(
+  filters: RequestFilters,
+  options: { cursor?: string; limit?: number } = {}
+): ListRequestsQuery {
+  const query: ListRequestsQuery = {
+    limit: options.limit ?? 50,
+  }
+  if (options.cursor) {
+    query.cursor = options.cursor
+  }
+  if (filters.method) {
+    query.method = filters.method
+  }
+  if (filters.path) {
+    query.path = filters.path
+  }
+  Object.assign(query, statusClassRange(filters.statusClass))
+  return query
+}
+
+export function requestMatchesFilters(
+  request: CapturedRequest,
+  filters: RequestFilters
+): boolean {
+  if (
+    filters.method &&
+    request.method.toUpperCase() !== filters.method.toUpperCase()
+  ) {
+    return false
+  }
+  if (
+    filters.path &&
+    !request.path.toLowerCase().includes(filters.path.toLowerCase())
+  ) {
+    return false
+  }
+  if (filters.statusClass) {
+    const status = request.response?.status
+    if (status == null) {
+      return false
+    }
+    const { statusMin, statusMax } = statusClassRange(filters.statusClass)
+    if (statusMin != null && status < statusMin) {
+      return false
+    }
+    if (statusMax != null && status > statusMax) {
+      return false
+    }
+  }
+  return true
+}
+
+export function filtersActive(filters: RequestFilters): boolean {
+  return Boolean(filters.method || filters.path || filters.statusClass)
+}
+
 function readCsrfToken(): string | undefined {
   if (typeof document === "undefined") {
     return undefined
@@ -41,7 +146,7 @@ function readCsrfToken(): string | undefined {
 
 async function request<T>(
   path: string,
-  options: RequestOptions = {},
+  options: RequestOptions = {}
 ): Promise<T> {
   const headers = new Headers(options.headers)
   const csrfToken = readCsrfToken()
@@ -78,7 +183,7 @@ async function request<T>(
       problem?.detail ??
         problem?.title ??
         `Request failed (${response.status}).`,
-      problem,
+      problem
     )
   }
 
@@ -109,7 +214,7 @@ export const api = {
   approveDevice: (userCode: string) =>
     request<void>(
       `/device/authorizations/${encodeURIComponent(userCode)}/approve`,
-      { method: "POST" },
+      { method: "POST" }
     ),
   listDomains: () => request<Domain[]>("/domains"),
   getDomain: (domainId: string) =>
@@ -120,13 +225,29 @@ export const api = {
     request<void>(`/domains/${encodeURIComponent(domainId)}`, {
       method: "DELETE",
     }),
-  listRequests: (domainId: string, cursor?: string, limit = 50) => {
-    const query = new URLSearchParams({ limit: String(limit) })
-    if (cursor) {
-      query.set("cursor", cursor)
+  listRequests: (domainId: string, query: ListRequestsQuery = {}) => {
+    const params = new URLSearchParams()
+    if (query.limit != null) {
+      params.set("limit", String(query.limit))
     }
+    if (query.cursor) {
+      params.set("cursor", query.cursor)
+    }
+    if (query.method) {
+      params.set("method", query.method)
+    }
+    if (query.path) {
+      params.set("path", query.path)
+    }
+    if (query.statusMin != null) {
+      params.set("statusMin", String(query.statusMin))
+    }
+    if (query.statusMax != null) {
+      params.set("statusMax", String(query.statusMax))
+    }
+    const search = params.toString()
     return request<RequestPage>(
-      `/domains/${encodeURIComponent(domainId)}/requests?${query}`,
+      `/domains/${encodeURIComponent(domainId)}/requests${search ? `?${search}` : ""}`
     )
   },
   getRequest: (requestId: string) =>

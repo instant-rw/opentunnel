@@ -1,4 +1,4 @@
-import { BroadcastIcon } from "@phosphor-icons/react"
+import { Logo } from "../components/logo"
 import { Link, createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/")({
@@ -20,9 +20,7 @@ function LandingPage() {
       <div className="relative mx-auto flex min-h-svh w-full max-w-5xl flex-col px-6 py-8 sm:px-10">
         <header className="animate-in fade-in slide-in-from-top-2 flex items-center justify-between duration-700">
           <a className="flex items-center gap-2 text-sm font-medium" href="/">
-            <span className="flex size-8 items-center justify-center bg-foreground text-background">
-              <BroadcastIcon className="size-4" />
-            </span>
+            <Logo className="size-8" />
             OpenTunnel
           </a>
           <nav className="flex items-center gap-3 text-sm">
