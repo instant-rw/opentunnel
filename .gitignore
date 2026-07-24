@@ -5,5 +5,5 @@ bin/
 coverage/
 node_modules/
 *.tsbuildinfo
-web/.next/
-web/out/
+frontend/dist/
+frontend/node_modules/

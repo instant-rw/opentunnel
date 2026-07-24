@@ -31,32 +31,41 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: go.work
           cache: true
-      - uses: actions/setup-node@v4
+          cache-dependency-path: |
+            go.work.sum
+            backend/go.sum
+            cli/go.sum
+            shared/go.sum
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
+          bun-version: latest
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: bun install --frozen-lockfile
       - name: Verify generated contracts
-        run: npm run generate && git diff --exit-code
-      - run: npm run format:check
-      - run: npm run lint
-      - run: npm run check
-      - run: npm run build
-      - run: go test -race ./...
-      - run: go build ./cmd/server ./cmd/opentunnel
+        run: |
+          make generate
+          git diff --exit-code
+      - name: Frontend checks
+        working-directory: frontend
+        run: |
+          bun run typecheck
+          bun run build
+      - name: Go tests
+        run: go test -race ./backend/... ./cli/... ./shared/...
+      - name: Go build
+        run: go build ./backend/cmd/server ./cli/cmd/opentunnel
       - name: Check installer scripts
         run: sh -n scripts/install.sh
-      - name: Run browser smoke tests
-        run: |
-          npx playwright install --with-deps chromium
-          npm run test:e2e --workspace web
 
   container:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: docker compose config --quiet
-      - run: docker build --check .
-      - run: docker build -t opentunnel:test .
+      - run: docker build --check -f backend/Dockerfile .
+      - run: docker build --check -f frontend/Dockerfile frontend
+      - run: docker build -t opentunnel-server:test -f backend/Dockerfile .
+      - run: docker build -t opentunnel-frontend:test -f frontend/Dockerfile frontend

@@ -4,10 +4,11 @@ project_name: opentunnel
 
 before:
   hooks:
-    - go test ./cmd/opentunnel/... ./internal/cli/...
+    - go test ./cli/cmd/opentunnel/... ./cli/internal/...
 
 builds:
   - id: opentunnel
+    dir: ./cli
     main: ./cmd/opentunnel
     binary: opentunnel
     env:

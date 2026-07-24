@@ -1,9 +1,15 @@
 .git
 .github
 .env
+.env.*
+!.env.example
+!.env.production.example
 bin
 coverage
 node_modules
-web/.next
-web/out
+frontend/node_modules
+frontend/dist
 *.tsbuildinfo
+web
+tmp
+**/.DS_Store

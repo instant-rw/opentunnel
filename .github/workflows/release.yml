@@ -15,8 +15,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: go.work
           cache: true
+          cache-dependency-path: |
+            go.work.sum
+            cli/go.sum
+            shared/go.sum
       - uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser

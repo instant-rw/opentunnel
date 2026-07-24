@@ -1,65 +1,56 @@
 # OpenTunnel
 
-OpenTunnel is a production-minded HTTP/HTTPS reverse-tunnel MVP. A Go process
-serves the control plane and embedded dashboard, routes wildcard hosts, and
-multiplexes traffic over authenticated WebSockets to the Go CLI. PostgreSQL
+OpenTunnel is a production-minded HTTP/HTTPS reverse-tunnel. A Go API server
+routes wildcard hosts and multiplexes traffic over authenticated WebSockets to
+the Go CLI. A separate SPA dashboard talks to the API over CORS. PostgreSQL
 stores accounts, domains, sessions, captured requests, and replay history.
 
 ## Layout
 
-- `cmd/server`: API, dashboard, public-host router, and tunnel server.
-- `cmd/opentunnel`: Go CLI entry point.
-- `internal/gen/api`: generated Go control-plane bindings.
-- `internal/gen/tunnel/v1`: generated versioned tunnel protocol bindings.
-- `api/openapi.yaml`: REST control-plane source of truth.
-- `protocol/tunnel.proto`: binary WebSocket frame contract.
-- `web`: statically exported Next.js dashboard.
-- `migrations`: embedded PostgreSQL migrations.
-- `docs`: development, deployment, operations, and security guides.
+- `backend/`: API, public-host router, and tunnel server (`cmd/server`).
+- `cli/`: Go CLI (`cmd/opentunnel`), including `opentunnel update`.
+- `shared/`: OpenAPI + protobuf contracts, generated Go bindings, tunnel client.
+- `frontend/`: TanStack Start SPA dashboard (Bun + Vite).
+- `backend/migrations/`: embedded PostgreSQL migrations.
+- `docs/`: development, deployment, operations, and security guides.
 
 ## Prerequisites
 
-- Go 1.24 or newer
-- Node.js 22 or newer and npm
-- Docker, if running PostgreSQL locally
+- Go 1.25 or newer
+- Bun (frontend)
+- Docker, for Compose and images
+- An external PostgreSQL database (`DATABASE_URL`)
 
 ## Setup
 
 ```sh
-cp .env.example .env
-npm install
-docker compose up -d postgres
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+# Point DATABASE_URL in backend/.env at your Postgres instance, then:
+docker compose --env-file frontend/.env up --build
 ```
 
-Run the complete local stack:
+API: `http://localhost:8080` · Dashboard: `http://localhost:3000`  
+Liveness is `/healthz`; readiness is `/readyz`.
 
-```sh
-docker compose up --build
-```
-
-Open `http://localhost:8080`. Liveness is `/healthz`; readiness is `/readyz`.
 For separate-process development, see [local development](docs/local-development.md).
 
 ## Contracts and generated code
 
-Regenerate TypeScript, Go, and protobuf bindings:
-
 ```sh
-npm run generate
+make generate
 ```
 
-Generated files are committed, and CI detects drift by regenerating before tests.
+Regenerates Go OpenAPI/protobuf bindings and the frontend OpenAPI types.
+Generated files are committed; CI fails on drift.
 
 ## Checks
 
 ```sh
-npm run format:check
-npm run lint
-npm run check
-npm run build
-go test ./cmd/... ./internal/...
-go build ./cmd/server ./cmd/opentunnel
+make check
 ```
+
+Or individually: `make backend-dev`, `make frontend-dev`, `make cli-build`.
 
 ## Documentation
 

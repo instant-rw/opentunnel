@@ -36,7 +36,7 @@ Authorization: Bearer {cli-token}
 For the default base this resolves to
 `wss://opts.ink/tunnel?domainId={uuid}`. Frames are protobuf
 `opentunnel.tunnel.v1.Envelope` messages with protocol version `1`, as defined
-in `protocol/tunnel.proto`.
+in `shared/protocol/tunnel.proto`.
 
 Tokens are stored in macOS Keychain, Secret Service on Linux, or Windows
 Credential Locker. If the native facility is unavailable, the CLI uses a

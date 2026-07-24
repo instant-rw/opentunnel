@@ -21,8 +21,8 @@ contain secrets or personal data.
 - Use Cloudflare Full (strict), secure cookies, and a dedicated least-privilege
   PostgreSQL credential over encrypted transport.
 - Restrict Railway project access and rotate database and account credentials.
-- Keep dependencies and base images patched; review `npm audit`, Go vulnerability
-  scans, and container scans during releases.
+- Keep dependencies and base images patched; review Bun/npm audits, Go
+  vulnerability scans, and container scans during releases.
 - Do not expose PostgreSQL publicly. Backups must be encrypted and access-logged.
 - Treat tunnel access as equivalent to access to the developer's local service.
   Bind the CLI target to loopback and never forward privileged local endpoints.
