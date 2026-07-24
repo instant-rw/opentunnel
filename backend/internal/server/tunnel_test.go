@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"strconv"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -95,6 +96,37 @@ func TestPublicHostRoutingAndOfflineResponse(t *testing.T) {
 	handler.ServeHTTP(response, request)
 	if response.Code != http.StatusNotFound {
 		t.Fatalf("nested wildcard host got %d", response.Code)
+	}
+}
+
+func TestControlPlaneHostsSkipTunnelRouting(t *testing.T) {
+	t.Parallel()
+	store := newTunnelFakeStore()
+	handler := New(Config{
+		PublicHost:  "opts.ink",
+		BaseURL:     "https://api.opts.ink",
+		FrontendURL: "https://opts.ink",
+	}, store)
+
+	request := httptest.NewRequest(http.MethodGet, "http://api.opts.ink/healthz", nil)
+	response := httptest.NewRecorder()
+	handler.ServeHTTP(response, request)
+	if response.Code != http.StatusOK || !strings.Contains(response.Body.String(), `"status":"ok"`) {
+		t.Fatalf("api host healthz got %d %q", response.Code, response.Body.String())
+	}
+
+	request = httptest.NewRequest(http.MethodGet, "http://www.opts.ink/healthz", nil)
+	response = httptest.NewRecorder()
+	handler.ServeHTTP(response, request)
+	if response.Code != http.StatusOK || !strings.Contains(response.Body.String(), `"status":"ok"`) {
+		t.Fatalf("reserved host healthz got %d %q", response.Code, response.Body.String())
+	}
+
+	request = httptest.NewRequest(http.MethodGet, "http://demo.opts.ink/", nil)
+	response = httptest.NewRecorder()
+	handler.ServeHTTP(response, request)
+	if response.Code != http.StatusServiceUnavailable {
+		t.Fatalf("tunnel host should still go offline, got %d", response.Code)
 	}
 }
 

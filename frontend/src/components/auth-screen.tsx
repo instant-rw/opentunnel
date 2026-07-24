@@ -3,7 +3,6 @@ import {
   CheckIcon,
   EyeIcon,
   EyeSlashIcon,
-  KeyIcon,
   BroadcastIcon,
   ShieldCheckIcon,
 } from "@phosphor-icons/react"
@@ -211,18 +210,6 @@ export function AuthScreen({
               {mode === "login" ? "Create an account" : "Sign in"}
             </button>
           </p>
-          <button
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-            onClick={() =>
-              void navigate({
-                to: "/dashboard",
-                search: { preview: true },
-              })
-            }
-            type="button"
-          >
-            <KeyIcon className="size-3.5" /> Preview the dashboard
-          </button>
         </div>
         <p className="mt-8 text-center text-xs text-muted-foreground">
           By continuing, you agree to the Terms and Privacy Policy.

@@ -16,16 +16,10 @@ import {
   type TokenSummary,
   type User,
 } from "@/lib/api"
-import {
-  previewDomains,
-  previewRequests,
-  previewTokens,
-} from "@/lib/fixtures"
 import { subscribeToDomain, type StreamState } from "@/lib/sse"
 
 type DashboardContextValue = {
   user: User
-  preview: boolean
   domains: Domain[]
   tokens: TokenSummary[]
   requests: CapturedRequest[]
@@ -51,30 +45,20 @@ const DashboardContext = createContext<DashboardContextValue | null>(null)
 
 export function DashboardProvider({
   user,
-  preview,
   children,
   onSignOut,
 }: {
   user: User
-  preview: boolean
   children: ReactNode
   onSignOut: () => void
 }) {
-  const [domains, setDomains] = useState<Domain[]>(
-    preview ? previewDomains : [],
-  )
-  const [requests, setRequests] = useState<CapturedRequest[]>(
-    preview ? previewRequests : [],
-  )
-  const [tokens, setTokens] = useState<TokenSummary[]>(
-    preview ? previewTokens : [],
-  )
-  const [selectedDomainId, setSelectedDomainId] = useState(
-    preview ? (previewDomains[0]?.id ?? "") : "",
-  )
+  const [domains, setDomains] = useState<Domain[]>([])
+  const [requests, setRequests] = useState<CapturedRequest[]>([])
+  const [tokens, setTokens] = useState<TokenSummary[]>([])
+  const [selectedDomainId, setSelectedDomainId] = useState("")
   const [selectedRequest, setSelectedRequest] = useState<CapturedRequest>()
   const [streamState, setStreamState] = useState<StreamState>("closed")
-  const [loading, setLoading] = useState(!preview)
+  const [loading, setLoading] = useState(true)
   const [newDomainOpen, setNewDomainOpen] = useState(false)
   const [error, setError] = useState("")
 
@@ -93,7 +77,6 @@ export function DashboardProvider({
   )
 
   const loadDashboard = useCallback(async () => {
-    if (preview) return
     setLoading(true)
     setError("")
     try {
@@ -118,7 +101,7 @@ export function DashboardProvider({
     } finally {
       setLoading(false)
     }
-  }, [preview, selectedDomainId])
+  }, [selectedDomainId])
 
   useEffect(() => {
     const timeout = window.setTimeout(() => void loadDashboard(), 0)
@@ -126,7 +109,7 @@ export function DashboardProvider({
   }, [loadDashboard])
 
   useEffect(() => {
-    if (preview || !selectedDomainId) return
+    if (!selectedDomainId) return
     return subscribeToDomain(selectedDomainId, {
       onStateChange: setStreamState,
       onEvent: (event) => {
@@ -155,23 +138,19 @@ export function DashboardProvider({
         }
       },
     })
-  }, [preview, selectedDomainId])
+  }, [selectedDomainId])
 
   async function signOut() {
-    if (!preview) {
-      try {
-        await api.logout()
-      } catch {
-        // Clear local UI state even if the API is unavailable.
-      }
+    try {
+      await api.logout()
+    } catch {
+      // Clear local UI state even if the API is unavailable.
     }
     onSignOut()
   }
 
   async function revokeToken(id: string) {
-    if (!preview) {
-      await api.revokeToken(id)
-    }
+    await api.revokeToken(id)
     setTokens((current) => current.filter((token) => token.id !== id))
   }
 
@@ -188,7 +167,6 @@ export function DashboardProvider({
     <DashboardContext.Provider
       value={{
         user,
-        preview,
         domains,
         tokens,
         requests,

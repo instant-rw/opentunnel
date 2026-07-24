@@ -9,25 +9,31 @@
 3. Set `DATABASE_URL` and copy non-secret values from
    `backend/.env.production.example`. Typical production values:
 
-   - `OPENTUNNEL_BASE_URL=https://opts.ink`
-   - `OPENTUNNEL_FRONTEND_URL=https://app.opts.ink`
+   - `OPENTUNNEL_BASE_URL=https://api.opts.ink`
+   - `OPENTUNNEL_FRONTEND_URL=https://opts.ink`
    - `OPENTUNNEL_PUBLIC_HOST=opts.ink`
    - `OPENTUNNEL_COOKIE_DOMAIN=.opts.ink`
-   - `OPENTUNNEL_CORS_ORIGINS=https://app.opts.ink`
+   - `OPENTUNNEL_CORS_ORIGINS=https://opts.ink`
    - `OPENTUNNEL_SECURE_COOKIES=true`
 
 4. Deploy the **frontend** as a second service. Set config-as-code to
    `frontend/railway.json` (repo root as the working directory so
    `frontend/Dockerfile` can copy from `frontend/`). Set build-time
-   `VITE_API_URL=https://opts.ink/api/v1` (see
-   `frontend/.env.production.example`). Attach the dashboard hostname
-   (e.g. `app.opts.ink`).
+   `VITE_API_URL=https://api.opts.ink/api/v1` (see
+   `frontend/.env.production.example`). Attach the landing/dashboard hostname
+   (`opts.ink`).
 5. Generate a Railway domain for the API first and verify `/healthz` and
-   `/readyz`. Migrations run at API startup, so deploy only one migration-capable
-   version at a time.
-6. In API networking settings, add both `opts.ink` and `*.opts.ink` as custom
-   domains. Copy Railway's current CNAME and ACME validation targets; do not
-   infer or reuse values from another environment.
+   `/readyz` on `api.opts.ink`. Migrations run at API startup, so deploy only
+   one migration-capable version at a time.
+6. In API networking settings, add `api.opts.ink` and `*.opts.ink` as custom
+   domains (and apex `opts.ink` only if the API also terminates it). Copy
+   Railway's current CNAME and ACME validation targets; do not infer or reuse
+   values from another environment.
+
+Reserved subdomains under `OPENTUNNEL_PUBLIC_HOST` (`api`, `www`, `app`, …)
+plus the hosts of `OPENTUNNEL_BASE_URL` / `OPENTUNNEL_FRONTEND_URL` are never
+treated as tunnels, so `api.opts.ink` serves the control plane instead of
+returning `Tunnel Offline`.
 
 Railway must route WebSocket upgrades without a path rewrite. The service listens
 on Railway's injected `PORT` through `OPENTUNNEL_HTTP_ADDR`; set it to `:${PORT}`
@@ -37,9 +43,9 @@ if Railway does not map port 8080 automatically.
 
 Create the records Railway requests:
 
-- `@` CNAME to the Railway API target (control plane + tunnel hosts).
-- `*` CNAME to the Railway API target.
-- `app` (or your dashboard host) CNAME to the frontend service target.
+- `api` CNAME to the Railway API target.
+- `*` CNAME to the Railway API target (tunnel hosts).
+- `@` CNAME to the Railway frontend target (landing + dashboard).
 - Railway's `_acme-challenge` CNAME for the wildcard certificate.
 
 Keep the ACME challenge record **DNS only**. Start the application CNAME records
@@ -55,14 +61,16 @@ or `/readyz`. Forward the original `Host` header so the server can resolve
 ## Verification
 
 ```sh
-curl -fsS https://opts.ink/healthz
-curl -fsS https://opts.ink/readyz
+curl -fsS https://api.opts.ink/healthz
+curl -fsS https://api.opts.ink/readyz
 curl -i https://unused-test-slug.opts.ink/
 ```
 
 The unused wildcard hostname should reach OpenTunnel and return `503 Tunnel
-Offline`, proving wildcard DNS, TLS, and host routing. Then open the dashboard,
-connect the CLI to a test domain, and send a request through that hostname.
+Offline`, proving wildcard DNS, TLS, and host routing. `api.opts.ink` should
+return healthy JSON, not Tunnel Offline. Then open the dashboard on
+`opts.ink`, connect the CLI to a test domain, and send a request through that
+hostname.
 
 ## Rollback
 

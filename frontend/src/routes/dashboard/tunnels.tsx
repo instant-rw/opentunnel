@@ -40,7 +40,6 @@ function TunnelsPage() {
     selectedDomain,
     setSelectedDomainId,
     streamState,
-    preview,
     visibleRequests,
     setSelectedRequest,
     selectedRequest,
@@ -134,11 +133,7 @@ function TunnelsPage() {
                     Live stream
                   </span>
                   <strong className="mt-1 block text-sm">
-                    {preview
-                      ? "Preview"
-                      : streamState === "open"
-                        ? "Connected"
-                        : "Reconnecting"}
+                    {streamState === "open" ? "Connected" : "Reconnecting"}
                   </strong>
                 </div>
                 <div>

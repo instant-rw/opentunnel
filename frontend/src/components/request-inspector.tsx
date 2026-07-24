@@ -11,12 +11,10 @@ import { cn, decodeBody, formatRelativeTime, methodTone, statusVariant } from "@
 export function RequestInspector({
   request,
   online,
-  preview,
   onClose,
 }: {
   request: CapturedRequest
   online: boolean
-  preview: boolean
   onClose: () => void
 }) {
   const [tab, setTab] = useState("request")
@@ -27,11 +25,7 @@ export function RequestInspector({
     setReplaying(true)
     setReplayStatus("")
     try {
-      if (!preview) {
-        await api.replayRequest(request.id)
-      } else {
-        await new Promise((resolve) => window.setTimeout(resolve, 650))
-      }
+      await api.replayRequest(request.id)
       setReplayStatus("Replay queued")
     } catch (caught) {
       setReplayStatus(

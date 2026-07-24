@@ -8,6 +8,7 @@ import (
 	"io"
 	"net"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -252,13 +253,57 @@ func (s *Server) publicSlug(rawHost string) (string, bool) {
 		return "", false
 	}
 	slug := strings.TrimSuffix(host, suffix)
-	return slug, domainPattern.MatchString(slug) && !strings.Contains(slug, ".")
+	if !domainPattern.MatchString(slug) || strings.Contains(slug, ".") {
+		return "", false
+	}
+	if s.isControlPlaneSlug(slug) {
+		return "", false
+	}
+	return slug, true
 }
 
 func (s *Server) isPublicHostCandidate(rawHost string) bool {
 	host := normalizedHost(rawHost)
 	suffix := "." + strings.ToLower(strings.TrimSuffix(s.config.PublicHost, "."))
-	return strings.HasSuffix(host, suffix)
+	if !strings.HasSuffix(host, suffix) {
+		return false
+	}
+	slug := strings.TrimSuffix(host, suffix)
+	if domainPattern.MatchString(slug) && !strings.Contains(slug, ".") && s.isControlPlaneSlug(slug) {
+		return false
+	}
+	return true
+}
+
+// isControlPlaneSlug reports hosts that must not be treated as tunnels:
+// reserved labels plus whatever BaseURL / FrontendURL resolve to under PublicHost.
+func (s *Server) isControlPlaneSlug(slug string) bool {
+	if _, ok := reservedSlugs[slug]; ok {
+		return true
+	}
+	publicHost := strings.ToLower(strings.TrimSuffix(s.config.PublicHost, "."))
+	for _, raw := range []string{s.config.BaseURL, s.config.FrontendURL} {
+		host := hostnameFromURL(raw)
+		if host == "" {
+			continue
+		}
+		if host == slug+"."+publicHost {
+			return true
+		}
+	}
+	return false
+}
+
+func hostnameFromURL(raw string) string {
+	raw = strings.TrimSpace(raw)
+	if raw == "" {
+		return ""
+	}
+	parsed, err := url.Parse(raw)
+	if err != nil || parsed.Host == "" {
+		return ""
+	}
+	return normalizedHost(parsed.Host)
 }
 
 func normalizedHost(rawHost string) string {

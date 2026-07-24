@@ -19,13 +19,11 @@ import { cn } from "@/lib/utils"
 export function NewDomainDialog({
   open,
   domains,
-  preview,
   onClose,
   onCreated,
 }: {
   open: boolean
   domains: Domain[]
-  preview: boolean
   onClose: () => void
   onCreated: (domain: Domain) => void
 }) {
@@ -41,15 +39,7 @@ export function NewDomainDialog({
     setLoading(true)
     setError("")
     try {
-      const domain = preview
-        ? {
-            id: `dom_${Date.now()}`,
-            slug: normalized,
-            hostname: `${normalized}.opts.ink`,
-            status: "offline" as const,
-            createdAt: new Date().toISOString(),
-          }
-        : await api.createDomain(normalized)
+      const domain = await api.createDomain(normalized)
       onCreated(domain)
       setSlug("")
       onClose()
