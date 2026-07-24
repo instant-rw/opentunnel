@@ -5,9 +5,7 @@ WORKDIR /src
 RUN apk add --no-cache ca-certificates
 COPY shared/go.mod shared/go.sum ./shared/
 COPY backend/go.mod backend/go.sum ./backend/
-WORKDIR /src/backend
-RUN go mod download
-WORKDIR /src
+RUN cd shared && go mod download && cd ../backend && go mod download
 COPY shared ./shared
 COPY backend ./backend
 WORKDIR /src/backend

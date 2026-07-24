@@ -6,6 +6,9 @@ import tailwindcss from "@tailwindcss/vite"
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
+  preview: {
+    host: "127.0.0.1",
+  },
   plugins: [
     devtools(),
     tailwindcss(),
@@ -17,6 +20,7 @@ const config = defineConfig({
           outputPath: "/_shell.html",
           crawlLinks: false,
           retryCount: 0,
+          
         },
       },
       // Explicit concurrency avoids hang when os.cpus() is empty (some CI/sandboxes).
