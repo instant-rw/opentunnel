@@ -6,12 +6,12 @@ import {
 } from "@phosphor-icons/react"
 import type { Icon } from "@phosphor-icons/react"
 
-export const GITHUB_URL = "https://github.com/instant-rw/opentunnel"
+export const GITHUB_URL = "https://github.com/optunnel/opentunnel"
 export const DOCS_URL =
-  "https://github.com/instant-rw/opentunnel/tree/main/docs"
+  "https://github.com/optunnel/opentunnel/tree/main/docs"
 export const CONTRIBUTE_URL =
-  "https://github.com/instant-rw/opentunnel/blob/main/CONTRIBUTING.md"
-export const ISSUES_URL = "https://github.com/instant-rw/opentunnel/issues"
+  "https://github.com/optunnel/opentunnel/blob/main/CONTRIBUTING.md"
+export const ISSUES_URL = "https://github.com/optunnel/opentunnel/issues"
 
 export type ExternalLink = {
   title: string

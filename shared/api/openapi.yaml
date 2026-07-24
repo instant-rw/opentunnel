@@ -3,6 +3,13 @@ info:
   title: OpenTunnel Control Plane API
   version: 1.0.0
   description: Control-plane contract shared by the server, CLI, and dashboard.
+  contact:
+    name: OpenTunnel
+    url: https://github.com/optunnel
+    email: contact@opts.ink
+  license:
+    name: PolyForm Noncommercial License 1.0.0
+    url: https://polyformproject.org/licenses/noncommercial/1.0.0
 servers:
   - url: /api/v1
 security:

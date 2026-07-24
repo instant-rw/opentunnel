@@ -32,7 +32,7 @@ opentunnel update
 
 `opentunnel update` downloads the matching GitHub release archive, verifies
 `checksums.txt`, and replaces the running binary. Override the repository with
-`OPENTUNNEL_REPOSITORY` (default `instant-rw/opentunnel`).
+`OPENTUNNEL_REPOSITORY` (default `optunnel/opentunnel`).
 
 ## Server integration
 

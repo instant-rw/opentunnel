@@ -86,7 +86,7 @@ export function softwareApplicationJsonLd() {
         priceCurrency: "USD",
       },
       license: "https://opensource.org/licenses/MIT",
-      codeRepository: "https://github.com/instant-rw/opentunnel",
+      codeRepository: "https://github.com/optunnel/opentunnel",
     }),
   }
 }

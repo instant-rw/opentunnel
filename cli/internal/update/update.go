@@ -20,7 +20,7 @@ import (
 	"github.com/creativeprojects/go-selfupdate/update"
 )
 
-const defaultRepositorySlug = "instant-rw/opentunnel"
+const defaultRepositorySlug = "optunnel/opentunnel"
 
 // Result describes a completed or skipped update check.
 type Result struct {

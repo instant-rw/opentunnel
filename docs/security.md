@@ -34,5 +34,6 @@ are process-local. Active tunnel coordination is process-local, so horizontal
 replicas are unsupported. The service is an HTTP/HTTPS tunnel, not a network
 isolation boundary and not a raw TCP/UDP proxy.
 
-Report suspected vulnerabilities privately to the repository owners. Revoke
-affected CLI tokens and web sessions before sharing logs or database extracts.
+Report suspected vulnerabilities privately by following the
+[security policy](../SECURITY.md). Revoke affected CLI tokens and web sessions
+before sharing logs or database extracts.

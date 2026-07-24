@@ -1,0 +1,41 @@
+name: Feature request
+description: Propose a focused improvement to OpenTunnel.
+title: "feature: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem or limitation should this change address?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior you would like and why it fits OpenTunnel.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Describe current workarounds or other approaches you considered.
+  - type: textarea
+    id: impact
+    attributes:
+      label: Compatibility and security impact
+      description: Note any API, protocol, database, deployment, privacy, or security implications.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues and pull requests for similar proposals.
+          required: true
+        - label: I understand that commercial use is prohibited by the project license.
+          required: true
+        - label: I agree to follow the Code of Conduct.
+          required: true
