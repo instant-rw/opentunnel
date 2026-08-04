@@ -96,8 +96,8 @@ func ParseBearer(header string) (string, error) {
 }
 
 func ValidatePassword(password string) error {
-	if len(password) < 12 {
-		return errors.New("password must contain at least 12 characters")
+	if len(password) < 8 {
+		return errors.New("password must contain at least 8 characters")
 	}
 	if len(password) > 1024 {
 		return errors.New("password is too long")

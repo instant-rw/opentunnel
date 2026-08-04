@@ -17,7 +17,7 @@ Authenticate and start forwarding:
 ```sh
 opentunnel login
 opentunnel domains create my-app
-opentunnel up --domain my-app 3000
+opentunnel up 3000 --domain my-app
 ```
 
 `opentunnel up` remembers the selected domain and port. Later runs can use

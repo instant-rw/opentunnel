@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"context"
 	"errors"
-	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -20,6 +19,7 @@ import (
 	"github.com/opentunnel/opentunnel/cli/internal/update"
 	"github.com/opentunnel/opentunnel/shared/gen/api"
 	"github.com/opentunnel/opentunnel/shared/tunnel"
+	"github.com/spf13/pflag"
 )
 
 type App struct {
@@ -53,7 +53,7 @@ func New(version string) (*App, error) {
 }
 
 func (a *App) Run(ctx context.Context, args []string) error {
-	global := flag.NewFlagSet("opentunnel", flag.ContinueOnError)
+	global := pflag.NewFlagSet("opentunnel", pflag.ContinueOnError)
 	global.SetOutput(a.ErrOut)
 	apiURL := global.String("api-url", "", "control-plane API URL")
 	showVersion := global.Bool("version", false, "print the OpenTunnel version")
@@ -247,14 +247,14 @@ func (a *App) domains(ctx context.Context, client *control.Client, args []string
 }
 
 func (a *App) up(ctx context.Context, client *control.Client, token string, cfg *config.Config, args []string) error {
-	flags := flag.NewFlagSet("up", flag.ContinueOnError)
+	flags := pflag.NewFlagSet("up", pflag.ContinueOnError)
 	flags.SetOutput(a.ErrOut)
 	domainFlag := flags.String("domain", "", "domain slug to connect")
 	if err := flags.Parse(args); err != nil {
 		return err
 	}
 	if flags.NArg() > 1 {
-		return errors.New("usage: opentunnel up [--domain slug] [port]")
+		return errors.New("usage: opentunnel up [port] [--domain slug]")
 	}
 	port := cfg.LastPort
 	if port == 0 {
@@ -348,7 +348,7 @@ func (a *App) selectDomain(ctx context.Context, client *control.Client, domains 
 }
 
 func (a *App) requests(ctx context.Context, client *control.Client, cfg config.Config, args []string) error {
-	flags := flag.NewFlagSet("requests", flag.ContinueOnError)
+	flags := pflag.NewFlagSet("requests", pflag.ContinueOnError)
 	flags.SetOutput(a.ErrOut)
 	domainFlag := flags.String("domain", "", "domain slug or ID")
 	limit := flags.Int("limit", 20, "maximum requests to display")
@@ -415,7 +415,7 @@ func (a *App) usage() {
 Commands:
   login
   logout
-  up [--domain slug] [port]
+  up [port] [--domain slug]
   domains list
   domains create <slug>
   requests [--domain slug] [--limit 20]
