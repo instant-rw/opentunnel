@@ -5,6 +5,9 @@ WORKDIR /app
 ARG VITE_API_URL=http://localhost:8080/api/v1
 ENV VITE_API_URL=$VITE_API_URL
 
+ARG VITE_UMAMI_WEBSITE_ID=12345678-90ab-cdef-1234-567890abcdef
+ENV VITE_UMAMI_WEBSITE_ID=$VITE_UMAMI_WEBSITE_ID
+
 COPY frontend/package.json frontend/bun.lock ./
 RUN bun install --frozen-lockfile
 
