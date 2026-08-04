@@ -6,7 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { api, ApiError, type CapturedRequest } from "@/lib/api"
-import { cn, decodeBody, formatRelativeTime, methodTone, statusVariant } from "@/lib/utils"
+import {
+  cn,
+  decodeBody,
+  formatRelativeTime,
+  methodTone,
+  statusVariant,
+} from "@/lib/utils"
 
 export function RequestInspector({
   request,
@@ -29,7 +35,7 @@ export function RequestInspector({
       setReplayStatus("Replay queued")
     } catch (caught) {
       setReplayStatus(
-        caught instanceof ApiError ? caught.message : "Replay failed",
+        caught instanceof ApiError ? caught.message : "Replay failed"
       )
     } finally {
       setReplaying(false)
@@ -53,15 +59,13 @@ export function RequestInspector({
             <div className="flex items-center gap-2">
               <span
                 className={cn(
-                  "px-1.5 py-0.5 font-mono text-[10px] font-semibold",
-                  methodTone(request.method),
+                  "px-1.5 py-0.5 text-[10px] font-semibold",
+                  methodTone(request.method)
                 )}
               >
                 {request.method}
               </span>
-              <strong className="truncate font-mono text-sm">
-                {request.path}
-              </strong>
+              <strong className="truncate text-sm">{request.path}</strong>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
               {formatRelativeTime(request.receivedAt)}
@@ -94,7 +98,9 @@ export function RequestInspector({
           </div>
           <div className="min-w-0">
             <span className="text-muted-foreground">Request ID</span>
-            <code className="mt-1 block truncate text-[11px]">{request.id}</code>
+            <code className="mt-1 block truncate text-[11px]">
+              {request.id}
+            </code>
           </div>
         </div>
 
@@ -137,7 +143,7 @@ export function RequestInspector({
                           <code className="text-[11px] font-medium">
                             {header.name}
                           </code>
-                          <span className="break-all text-xs text-muted-foreground">
+                          <span className="text-xs break-all text-muted-foreground">
                             {header.values.join(", ")}
                           </span>
                         </div>
@@ -158,7 +164,7 @@ export function RequestInspector({
                   </div>
                   {panelContent ? (
                     <>
-                      <pre className="overflow-auto bg-muted/50 p-3 font-mono text-[11px] leading-relaxed">
+                      <pre className="overflow-auto bg-muted/50 p-3 text-[11px] leading-relaxed">
                         {decodeBody(panelContent.base64)}
                       </pre>
                       <p className="mt-2 text-xs text-muted-foreground">
@@ -195,7 +201,9 @@ export function RequestInspector({
               </p>
             ) : null}
           </div>
-          {replayStatus ? <Badge variant="outline">{replayStatus}</Badge> : null}
+          {replayStatus ? (
+            <Badge variant="outline">{replayStatus}</Badge>
+          ) : null}
         </footer>
       </aside>
     </>

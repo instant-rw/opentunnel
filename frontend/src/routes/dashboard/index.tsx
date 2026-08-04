@@ -209,7 +209,7 @@ function OverviewPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center justify-between gap-2 bg-muted/50 px-3 py-2 font-mono text-xs">
+            <div className="flex items-center justify-between gap-2 bg-muted/50 px-3 py-2 text-xs">
               <code>opentunnel up 3000</code>
               <CopyButton value="opentunnel up 3000" />
             </div>

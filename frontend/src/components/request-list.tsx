@@ -236,7 +236,7 @@ export function RequestList({
                   <TableCell>
                     <span
                       className={cn(
-                        "px-1.5 py-0.5 font-mono text-[10px] font-semibold",
+                        "px-1.5 py-0.5 text-[10px] font-semibold",
                         methodTone(request.method)
                       )}
                     >
@@ -244,9 +244,7 @@ export function RequestList({
                     </span>
                   </TableCell>
                   <TableCell>
-                    <div className="font-mono text-xs font-medium">
-                      {request.path}
-                    </div>
+                    <div className="text-xs font-medium">{request.path}</div>
                     {request.query ? (
                       <div className="truncate text-[11px] text-muted-foreground">
                         ?{request.query}

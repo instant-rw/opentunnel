@@ -19,7 +19,7 @@ export const Route = createFileRoute("/dashboard/cli")({
 
 function CliSetupPage() {
   const [platform, setPlatform] = useState<"macos" | "linux" | "windows">(
-    "macos",
+    "macos"
   )
   const installCommand =
     platform === "windows"
@@ -88,7 +88,7 @@ function CliSetupPage() {
               <span className="ml-2 text-xs text-white/50">Terminal</span>
             </div>
           </CardHeader>
-          <CardContent className="font-mono text-xs leading-relaxed whitespace-pre-wrap">
+          <CardContent className="text-xs leading-relaxed tracking-wide whitespace-pre-wrap">
             <span className="text-white/50">
               $ opentunnel up 3000 --domain &lt;your-domain&gt;
             </span>
@@ -103,7 +103,9 @@ function CliSetupPage() {
             {"\n\n"}
             <span className="text-white/50">Public URL</span>
             {"\n"}
-            <span className="text-sky-300">https://&lt;your-domain&gt;.opts.ink</span>
+            <span className="text-sky-300">
+              https://&lt;your-domain&gt;.opts.ink
+            </span>
             {"\n\n"}
             <span className="text-white/50">Forwarding</span>
             {"\n"}
@@ -148,7 +150,7 @@ function CommandBlock({ value }: { value: string }) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between gap-2 bg-muted/50 px-3 py-2 font-mono text-xs",
+        "flex items-center justify-between gap-2 bg-muted/50 px-3 py-2 text-xs"
       )}
     >
       <code className="break-all">{value}</code>

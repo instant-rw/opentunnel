@@ -112,7 +112,7 @@ export function AuthScreen({ userCode }: { userCode?: string }) {
                 <strong className="block">Approve CLI sign-in</strong>
                 <span className="text-muted-foreground">
                   Code{" "}
-                  <kbd className="rounded bg-background px-1.5 py-0.5 font-mono text-xs">
+                  <kbd className="rounded bg-background px-1.5 py-0.5 text-xs">
                     {userCode.toUpperCase()}
                   </kbd>
                 </span>

@@ -159,7 +159,7 @@ function TunnelsPage() {
                     <strong className="block">This tunnel is offline</strong>
                     <p className="text-muted-foreground">
                       Start it with{" "}
-                      <code className="font-mono text-xs">
+                      <code className="text-xs">
                         opentunnel up 3000 --domain {selectedDomain.slug}
                       </code>
                     </p>
