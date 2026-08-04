@@ -54,8 +54,7 @@ export function NavMain({
                     <SidebarMenuAction className="aria-expanded:rotate-90" />
                   }
                 >
-                  <CaretRightIcon
-                  />
+                  <CaretRightIcon />
                   <span className="sr-only">Toggle</span>
                 </CollapsibleTrigger>
                 <CollapsibleContent>

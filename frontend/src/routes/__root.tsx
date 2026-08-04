@@ -82,10 +82,18 @@ export const Route = createRootRoute({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const umamiWebsiteId = import.meta.env.VITE_UMAMI_WEBSITE_ID
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        {umamiWebsiteId && (
+          <script
+            defer
+            src="https://cloud.umami.is/script.js"
+            data-website-id={umamiWebsiteId}
+          ></script>
+        )}
       </head>
       <body>
         <ThemeProvider

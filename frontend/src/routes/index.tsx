@@ -292,9 +292,9 @@ function Hero() {
               </h1>
 
               <p className="max-w-lg text-base leading-relaxed text-muted-foreground">
-                OpenTunnel gives your local apps persistent public domains—perfect
-                for webhooks, live demos, and mobile testing. No ports to open, no
-                router to fight, no traffic left unseen.
+                OpenTunnel gives your local apps persistent public
+                domains—perfect for webhooks, live demos, and mobile testing. No
+                ports to open, no router to fight, no traffic left unseen.
               </p>
 
               <div className="flex flex-wrap items-center gap-3">
@@ -402,7 +402,7 @@ function SectionHeading({
       <p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">
         {eyebrow}
       </p>
-      <h2 className="mt-3 font-heading text-3xl font-medium  sm:text-4xl">
+      <h2 className="mt-3 font-heading text-3xl font-medium sm:text-4xl">
         {title}
       </h2>
       <p className="mt-4 text-base leading-relaxed text-muted-foreground">
@@ -498,7 +498,7 @@ function Inspection() {
               <p className="text-xs tracking-[0.22em] text-muted-foreground uppercase">
                 Traffic inspector
               </p>
-              <h2 className="font-heading text-3xl font-medium  sm:text-4xl">
+              <h2 className="font-heading text-3xl font-medium sm:text-4xl">
                 Inspect every request as it happens
               </h2>
               <p className="text-base leading-relaxed text-muted-foreground">
@@ -542,7 +542,7 @@ function Inspection() {
                   Live requests
                 </span>
                 <span className="flex items-center gap-1.5 text-xs text-emerald-500">
-                  <span className="size-1.5 animate-pulse bg-emerald-500 rounded-full" />
+                  <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
                   streaming
                 </span>
               </div>

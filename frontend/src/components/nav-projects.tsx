@@ -16,7 +16,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { DotsThreeOutlineIcon, FolderIcon, ShareIcon, TrashIcon } from "@phosphor-icons/react"
+import {
+  DotsThreeOutlineIcon,
+  FolderIcon,
+  ShareIcon,
+  TrashIcon,
+} from "@phosphor-icons/react"
 
 export function NavProjects({
   projects,
@@ -47,8 +52,7 @@ export function NavProjects({
                   />
                 }
               >
-                <DotsThreeOutlineIcon
-                />
+                <DotsThreeOutlineIcon />
                 <span className="sr-only">More</span>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -75,8 +79,7 @@ export function NavProjects({
         ))}
         <SidebarMenuItem>
           <SidebarMenuButton>
-            <DotsThreeOutlineIcon
-            />
+            <DotsThreeOutlineIcon />
             <span>More</span>
           </SidebarMenuButton>
         </SidebarMenuItem>

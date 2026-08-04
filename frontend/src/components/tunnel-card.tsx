@@ -17,7 +17,7 @@ export function TunnelCard({
     <button
       className={cn(
         "flex w-full items-center gap-3 border p-3 text-left transition-colors hover:bg-muted/50",
-        selected && "border-foreground/30 bg-muted/40",
+        selected && "border-foreground/30 bg-muted/40"
       )}
       onClick={onSelect}
       type="button"
@@ -28,13 +28,13 @@ export function TunnelCard({
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-2">
           <strong className="truncate text-sm">{domain.hostname}</strong>
-          <Badge
-            variant={domain.status === "online" ? "default" : "outline"}
-          >
+          <Badge variant={domain.status === "online" ? "default" : "outline"}>
             <span
               className={cn(
                 "size-1.5 rounded-full",
-                domain.status === "online" ? "bg-emerald-500" : "bg-muted-foreground",
+                domain.status === "online"
+                  ? "bg-emerald-500"
+                  : "bg-muted-foreground"
               )}
             />
             {domain.status}

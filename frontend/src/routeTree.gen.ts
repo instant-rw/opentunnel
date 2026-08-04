@@ -8,117 +8,117 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as DeviceRouteImport } from './routes/device'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as DashboardAccessRouteImport } from './routes/dashboard/access'
-import { Route as DashboardCliRouteImport } from './routes/dashboard/cli'
-import { Route as DashboardTunnelsRouteImport } from './routes/dashboard/tunnels'
+import { Route as rootRouteImport } from "./routes/__root"
+import { Route as IndexRouteImport } from "./routes/index"
+import { Route as DashboardRouteImport } from "./routes/dashboard"
+import { Route as DeviceRouteImport } from "./routes/device"
+import { Route as LoginRouteImport } from "./routes/login"
+import { Route as DashboardIndexRouteImport } from "./routes/dashboard/index"
+import { Route as DashboardAccessRouteImport } from "./routes/dashboard/access"
+import { Route as DashboardCliRouteImport } from "./routes/dashboard/cli"
+import { Route as DashboardTunnelsRouteImport } from "./routes/dashboard/tunnels"
 
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+  id: "/dashboard",
+  path: "/dashboard",
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeviceRoute = DeviceRouteImport.update({
-  id: '/device',
-  path: '/device',
+  id: "/device",
+  path: "/device",
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+  id: "/login",
+  path: "/login",
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardAccessRoute = DashboardAccessRouteImport.update({
-  id: '/access',
-  path: '/access',
+  id: "/access",
+  path: "/access",
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardCliRoute = DashboardCliRouteImport.update({
-  id: '/cli',
-  path: '/cli',
+  id: "/cli",
+  path: "/cli",
   getParentRoute: () => DashboardRoute,
 } as any)
 const DashboardTunnelsRoute = DashboardTunnelsRouteImport.update({
-  id: '/tunnels',
-  path: '/tunnels',
+  id: "/tunnels",
+  path: "/tunnels",
   getParentRoute: () => DashboardRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteWithChildren
-  '/device': typeof DeviceRoute
-  '/login': typeof LoginRoute
-  '/dashboard/access': typeof DashboardAccessRoute
-  '/dashboard/cli': typeof DashboardCliRoute
-  '/dashboard/tunnels': typeof DashboardTunnelsRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  "/": typeof IndexRoute
+  "/dashboard": typeof DashboardRouteWithChildren
+  "/device": typeof DeviceRoute
+  "/login": typeof LoginRoute
+  "/dashboard/access": typeof DashboardAccessRoute
+  "/dashboard/cli": typeof DashboardCliRoute
+  "/dashboard/tunnels": typeof DashboardTunnelsRoute
+  "/dashboard/": typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/device': typeof DeviceRoute
-  '/login': typeof LoginRoute
-  '/dashboard/access': typeof DashboardAccessRoute
-  '/dashboard/cli': typeof DashboardCliRoute
-  '/dashboard/tunnels': typeof DashboardTunnelsRoute
-  '/dashboard': typeof DashboardIndexRoute
+  "/": typeof IndexRoute
+  "/device": typeof DeviceRoute
+  "/login": typeof LoginRoute
+  "/dashboard/access": typeof DashboardAccessRoute
+  "/dashboard/cli": typeof DashboardCliRoute
+  "/dashboard/tunnels": typeof DashboardTunnelsRoute
+  "/dashboard": typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRouteWithChildren
-  '/device': typeof DeviceRoute
-  '/login': typeof LoginRoute
-  '/dashboard/access': typeof DashboardAccessRoute
-  '/dashboard/cli': typeof DashboardCliRoute
-  '/dashboard/tunnels': typeof DashboardTunnelsRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  "/": typeof IndexRoute
+  "/dashboard": typeof DashboardRouteWithChildren
+  "/device": typeof DeviceRoute
+  "/login": typeof LoginRoute
+  "/dashboard/access": typeof DashboardAccessRoute
+  "/dashboard/cli": typeof DashboardCliRoute
+  "/dashboard/tunnels": typeof DashboardTunnelsRoute
+  "/dashboard/": typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/dashboard'
-    | '/device'
-    | '/login'
-    | '/dashboard/access'
-    | '/dashboard/cli'
-    | '/dashboard/tunnels'
-    | '/dashboard/'
+    | "/"
+    | "/dashboard"
+    | "/device"
+    | "/login"
+    | "/dashboard/access"
+    | "/dashboard/cli"
+    | "/dashboard/tunnels"
+    | "/dashboard/"
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
-    | '/device'
-    | '/login'
-    | '/dashboard/access'
-    | '/dashboard/cli'
-    | '/dashboard/tunnels'
-    | '/dashboard'
+    | "/"
+    | "/device"
+    | "/login"
+    | "/dashboard/access"
+    | "/dashboard/cli"
+    | "/dashboard/tunnels"
+    | "/dashboard"
   id:
-    | '__root__'
-    | '/'
-    | '/dashboard'
-    | '/device'
-    | '/login'
-    | '/dashboard/access'
-    | '/dashboard/cli'
-    | '/dashboard/tunnels'
-    | '/dashboard/'
+    | "__root__"
+    | "/"
+    | "/dashboard"
+    | "/device"
+    | "/login"
+    | "/dashboard/access"
+    | "/dashboard/cli"
+    | "/dashboard/tunnels"
+    | "/dashboard/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -128,61 +128,61 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
+    "/": {
+      id: "/"
+      path: "/"
+      fullPath: "/"
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
+    "/dashboard": {
+      id: "/dashboard"
+      path: "/dashboard"
+      fullPath: "/dashboard"
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/device': {
-      id: '/device'
-      path: '/device'
-      fullPath: '/device'
+    "/device": {
+      id: "/device"
+      path: "/device"
+      fullPath: "/device"
       preLoaderRoute: typeof DeviceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
+    "/login": {
+      id: "/login"
+      path: "/login"
+      fullPath: "/login"
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/'
-      fullPath: '/dashboard/'
+    "/dashboard/": {
+      id: "/dashboard/"
+      path: "/"
+      fullPath: "/dashboard/"
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/access': {
-      id: '/dashboard/access'
-      path: '/access'
-      fullPath: '/dashboard/access'
+    "/dashboard/access": {
+      id: "/dashboard/access"
+      path: "/access"
+      fullPath: "/dashboard/access"
       preLoaderRoute: typeof DashboardAccessRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/cli': {
-      id: '/dashboard/cli'
-      path: '/cli'
-      fullPath: '/dashboard/cli'
+    "/dashboard/cli": {
+      id: "/dashboard/cli"
+      path: "/cli"
+      fullPath: "/dashboard/cli"
       preLoaderRoute: typeof DashboardCliRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/dashboard/tunnels': {
-      id: '/dashboard/tunnels'
-      path: '/tunnels'
-      fullPath: '/dashboard/tunnels'
+    "/dashboard/tunnels": {
+      id: "/dashboard/tunnels"
+      path: "/tunnels"
+      fullPath: "/dashboard/tunnels"
       preLoaderRoute: typeof DashboardTunnelsRouteImport
       parentRoute: typeof DashboardRoute
     }
@@ -204,7 +204,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
-  DashboardRouteChildren,
+  DashboardRouteChildren
 )
 
 const rootRouteChildren: RootRouteChildren = {
@@ -217,9 +217,9 @@ export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
+import type { getRouter } from "./router.tsx"
+import type { createStart } from "@tanstack/react-start"
+declare module "@tanstack/react-start" {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>

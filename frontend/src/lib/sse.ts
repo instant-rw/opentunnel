@@ -26,18 +26,18 @@ function isDomainEvent(value: unknown): value is DomainEvent {
 
 export function subscribeToDomain(
   domainId: string,
-  handlers: StreamHandlers,
+  handlers: StreamHandlers
 ): () => void {
   handlers.onStateChange("connecting")
   const source = new EventSource(
     `${getApiBaseUrl()}/domains/${encodeURIComponent(domainId)}/events`,
-    { withCredentials: true },
+    { withCredentials: true }
   )
 
   source.onopen = () => handlers.onStateChange("open")
   const receive = (
     message: MessageEvent<string>,
-    type?: DomainEvent["type"],
+    type?: DomainEvent["type"]
   ) => {
     try {
       const payload: unknown = JSON.parse(message.data)
@@ -56,13 +56,13 @@ export function subscribeToDomain(
   }
   source.onmessage = (message) => receive(message)
   source.addEventListener("domain.status", (message) =>
-    receive(message as MessageEvent<string>, "domain.status"),
+    receive(message as MessageEvent<string>, "domain.status")
   )
   source.addEventListener("request.created", (message) =>
-    receive(message as MessageEvent<string>, "request.created"),
+    receive(message as MessageEvent<string>, "request.created")
   )
   source.addEventListener("request.updated", (message) =>
-    receive(message as MessageEvent<string>, "request.updated"),
+    receive(message as MessageEvent<string>, "request.updated")
   )
   source.onerror = () => handlers.onStateChange("connecting")
 

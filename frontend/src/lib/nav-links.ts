@@ -7,8 +7,7 @@ import {
 import type { Icon } from "@phosphor-icons/react"
 
 export const GITHUB_URL = "https://github.com/optunnel/opentunnel"
-export const DOCS_URL =
-  "https://github.com/optunnel/opentunnel/tree/main/docs"
+export const DOCS_URL = "https://github.com/optunnel/opentunnel/tree/main/docs"
 export const CONTRIBUTE_URL =
   "https://github.com/optunnel/opentunnel/blob/main/CONTRIBUTING.md"
 export const ISSUES_URL = "https://github.com/optunnel/opentunnel/issues"

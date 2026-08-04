@@ -47,7 +47,7 @@ export function NewDomainDialog({
       setError(
         caught instanceof ApiError
           ? caught.message
-          : "Could not reserve this domain.",
+          : "Could not reserve this domain."
       )
     } finally {
       setLoading(false)
@@ -80,7 +80,7 @@ export function NewDomainDialog({
                 id="domain-slug"
                 onChange={(event) =>
                   setSlug(
-                    event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""),
+                    event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "")
                   )
                 }
                 placeholder="my-project"
@@ -93,7 +93,7 @@ export function NewDomainDialog({
             <div
               className={cn(
                 "flex items-center gap-2 text-xs",
-                ready ? "text-emerald-700" : "text-destructive",
+                ready ? "text-emerald-700" : "text-destructive"
               )}
             >
               {ready ? (

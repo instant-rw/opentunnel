@@ -22,9 +22,9 @@ export function decodeBody(base64?: string): string {
       Array.from(atob(base64))
         .map(
           (character) =>
-            `%${character.charCodeAt(0).toString(16).padStart(2, "0")}`,
+            `%${character.charCodeAt(0).toString(16).padStart(2, "0")}`
         )
-        .join(""),
+        .join("")
     )
   } catch {
     return "[Binary body]"
@@ -39,7 +39,7 @@ export function methodTone(method: string): string {
 }
 
 export function statusVariant(
-  status?: number,
+  status?: number
 ): "default" | "secondary" | "destructive" | "outline" {
   if (!status) return "outline"
   if (status >= 500) return "destructive"
