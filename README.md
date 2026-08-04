@@ -1,6 +1,6 @@
 # OpenTunnel
 
-[![CI](https://github.com/optunnel/opentunnel/actions/workflows/ci.yml/badge.svg)](https://github.com/optunnel/opentunnel/actions/workflows/ci.yml)
+[![CI](https://github.com/optunnel/opentunnel/actions/workflows/release.yml/badge.svg)](https://github.com/optunnel/opentunnel/actions/workflows/release.yml)
 [![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue.svg)](LICENSE)
 
 OpenTunnel is a source-available, production-minded HTTP/HTTPS reverse tunnel.

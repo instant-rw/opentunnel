@@ -55,6 +55,9 @@ func New(version string) (*App, error) {
 func (a *App) Run(ctx context.Context, args []string) error {
 	global := pflag.NewFlagSet("opentunnel", pflag.ContinueOnError)
 	global.SetOutput(a.ErrOut)
+	// Stop at the command name so subcommand flags like `up … --domain` are not
+	// parsed (and rejected) here. Subcommand FlagSets keep interspersed on.
+	global.SetInterspersed(false)
 	apiURL := global.String("api-url", "", "control-plane API URL")
 	showVersion := global.Bool("version", false, "print the OpenTunnel version")
 	if err := global.Parse(args); err != nil {
